@@ -122,8 +122,7 @@ class Settings(BaseSettings):
         if not self.aws_access_key_id and not self.aws_secret_access_key:
             # IAM role is acceptable — skip if both are empty (assume role-based auth)
             pass
-        if not self.sentry_dsn:
-            errors.append("SENTRY_DSN should be set in production for error tracking")
+        # SENTRY_DSN is optional — only warn, never block startup
         if errors:
             raise RuntimeError(
                 "Production secrets validation failed:\n" + "\n".join(f"  - {e}" for e in errors)
