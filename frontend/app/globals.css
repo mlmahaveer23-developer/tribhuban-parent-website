@@ -157,6 +157,13 @@
     tab-size: 4;
   }
 
+  /*
+   * Global static dot pattern background.
+   * Applied via a pseudo-element so page content sits above it and the
+   * pattern naturally respects light / dark theme via CSS variable colours.
+   * The SVG dot is a single circle encoded as a data URI — zero network requests.
+   * Dot: 1.8 px radius, warm copper tone, 22 px grid (matches HeroBG spacing).
+   */
   body {
     background-color: var(--bg);
     color: var(--fg);
@@ -165,6 +172,44 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    position: relative;
+  }
+
+  /* Dot pattern overlay — sits behind all page content */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    /* Light theme dots: warm copper rgba(180,165,140,0.30) on 22×22 grid */
+    background-image: radial-gradient(
+      circle,
+      rgba(180, 165, 140, 0.30) 1.8px,
+      transparent 1.8px
+    );
+    background-size: 22px 22px;
+    background-position: 0 0;
+  }
+
+  /* Dark theme dots: slightly brighter stone tone for visibility */
+  .dark body::before,
+  [data-theme="dark"] body::before {
+    background-image: radial-gradient(
+      circle,
+      rgba(180, 165, 140, 0.14) 1.8px,
+      transparent 1.8px
+    );
+  }
+
+  /*
+   * Ensure all direct children of body stack above the dot layer.
+   * This covers Header, main, Footer, ConsentBanner.
+   */
+  body > * {
+    position: relative;
+    z-index: 1;
   }
 
   /* Headings use display font */
@@ -298,4 +343,17 @@
 
   /* Border using CSS var */
   .border-default { border-color: var(--border); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Dark theme dot pattern override
+   Placed outside @layer so specificity beats the base rule.
+───────────────────────────────────────────────────────────────────────────── */
+.dark body::before,
+[data-theme="dark"] body::before {
+  background-image: radial-gradient(
+    circle,
+    rgba(180, 165, 140, 0.13) 1.8px,
+    transparent 1.8px
+  );
 }
