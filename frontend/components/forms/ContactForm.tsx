@@ -526,7 +526,7 @@ export function ContactForm({ className }: ContactFormProps) {
           disabled={isSubmitting}
           aria-busy={isSubmitting}
           className={cn(
-            'inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3',
+            'relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-lg px-6 py-3',
             'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)] text-sm font-semibold',
             'hover:bg-[var(--btn-primary-hover)] transition-colors',
             'focus-visible:outline-none focus-visible:ring-2',
@@ -534,12 +534,21 @@ export function ContactForm({ className }: ContactFormProps) {
             'focus-visible:ring-offset-[var(--bg)]',
             'disabled:opacity-60 disabled:cursor-not-allowed',
             'min-h-[44px]',
+            'group',
           )}
         >
-          {isSubmitting && (
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-          )}
-          {isSubmitting ? 'Sending…' : 'Send Message'}
+          {/* shimmer sweep */}
+          <span
+            className="absolute inset-0 -skew-x-12 bg-white/10 translate-x-[-100%]
+                       group-hover:translate-x-[200%] transition-transform duration-500 ease-in-out pointer-events-none"
+            aria-hidden="true"
+          />
+          <span className="relative z-10 flex items-center gap-2">
+            {isSubmitting && (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            )}
+            {isSubmitting ? 'Sending…' : 'Send Message'}
+          </span>
         </button>
 
         <p className="text-xs text-[var(--fg-subtle)]">

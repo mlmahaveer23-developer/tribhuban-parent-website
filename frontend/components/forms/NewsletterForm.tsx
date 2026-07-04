@@ -194,7 +194,7 @@ export default function NewsletterForm({
           aria-disabled={isSubmitting}
           aria-busy={isSubmitting}
           className={cn(
-            'h-10 px-5 rounded-md shrink-0',
+            'relative h-10 px-5 rounded-md shrink-0 overflow-hidden',
             'text-sm font-semibold whitespace-nowrap',
             'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)]',
             'hover:bg-[var(--btn-primary-hover)] transition-colors duration-150',
@@ -203,18 +203,25 @@ export default function NewsletterForm({
             'focus-visible:ring-offset-[var(--bg)]',
             'disabled:opacity-60 disabled:cursor-not-allowed',
             'inline-flex items-center justify-center gap-2',
-            // full-width on mobile, auto on sm+
-            'w-full sm:w-auto',
+            'w-full sm:w-auto group',
           )}
         >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              <span>Subscribing…</span>
-            </>
-          ) : (
-            'Subscribe'
-          )}
+          {/* shimmer sweep */}
+          <span
+            className="absolute inset-0 -skew-x-12 bg-white/10 translate-x-[-100%]
+                       group-hover:translate-x-[200%] transition-transform duration-500 ease-in-out pointer-events-none"
+            aria-hidden="true"
+          />
+          <span className="relative z-10 flex items-center gap-2">
+            {isSubmitting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                <span>Subscribing…</span>
+              </>
+            ) : (
+              'Subscribe'
+            )}
+          </span>
         </button>
       </div>
     </form>

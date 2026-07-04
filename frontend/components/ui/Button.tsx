@@ -1,24 +1,23 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils/cn';
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Button variants — copper accent primary, ivory secondary, ghost, destructive
+   Button variants — copper accent primary, ivory secondary, ghost, destructive.
    Uses CSS variables for theme-aware colours.
+   Enhanced with micro-interaction: spring scale on tap/hover.
 ───────────────────────────────────────────────────────────────────────────── */
 const buttonVariants = cva(
-  // Base styles applied to every variant
   [
-    'inline-flex items-center justify-center gap-2',
+    'relative inline-flex items-center justify-center gap-2 overflow-hidden',
     'font-sans font-semibold whitespace-nowrap',
     'rounded-md border border-transparent',
     'transition-colors duration-150',
     'cursor-pointer select-none',
-    // Accessibility: visible focus ring using brand gold
     'focus-visible:outline-none',
     'focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]',
-    // Disabled state
     'disabled:pointer-events-none disabled:opacity-50',
   ],
   {
@@ -27,7 +26,6 @@ const buttonVariants = cva(
         primary: [
           'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)]',
           'hover:bg-[var(--btn-primary-hover)]',
-          'active:bg-[var(--accent-hover)]',
         ],
         secondary: [
           'bg-[var(--btn-secondary-bg)] text-[var(--btn-secondary-fg)]',
@@ -39,8 +37,8 @@ const buttonVariants = cva(
           'hover:bg-[var(--bg-muted)]',
         ],
         destructive: [
-          'bg-danger text-ivory-50',
-          'hover:bg-danger/90',
+          'bg-[#A83232] text-white',
+          'hover:bg-[#8f2a2a]',
         ],
       },
       size: {
@@ -59,22 +57,45 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  /**
-   * When true, the button renders as its child element (polymorphic slot).
-   * Useful for rendering a `<Link>` with button styles.
-   */
   asChild?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button';
+  ({ className, variant, size, asChild = false, children, ...props }, ref) => {
+    if (asChild) {
+      const Comp = Slot;
+      return (
+        <Comp
+          ref={ref}
+          className={cn(buttonVariants({ variant, size, className }))}
+          {...props}
+        >
+          {children}
+        </Comp>
+      );
+    }
+
     return (
-      <Comp
+      <motion.button
         ref={ref}
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 25 }}
         className={cn(buttonVariants({ variant, size, className }))}
-        {...props}
-      />
+        {...(props as React.ComponentPropsWithRef<typeof motion.button>)}
+      >
+        <span className="relative z-10">{children}</span>
+        {/* shimmer on hover for primary variant */}
+        {(variant === 'primary' || variant === undefined) && (
+          <motion.span
+            className="absolute inset-0 bg-white/10 -skew-x-12"
+            initial={{ x: '-100%' }}
+            whileHover={{ x: '200%' }}
+            transition={{ duration: 0.45, ease: 'easeInOut' }}
+            aria-hidden="true"
+          />
+        )}
+      </motion.button>
     );
   },
 );

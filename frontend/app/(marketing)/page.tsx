@@ -4,6 +4,8 @@ import NewsletterForm from '@/components/forms/NewsletterForm';
 import DecorativeMotif from '@/components/ui/DecorativeMotif';
 import HeroWaveBackground from '@/components/marketing/HeroWaveBackground';
 import HeroContent from '@/components/marketing/HeroContent';
+import ScrollReveal from '@/components/motion/ScrollReveal';
+import StaggerGroup from '@/components/motion/StaggerGroup';
 
 // ── JSON-LD structured data ───────────────────────────────────────────────────
 
@@ -155,21 +157,21 @@ export default function HomePage() {
         {/* ── Stats section removed — company founded 2026, stats not yet accurate ── */}
 
         {/* ── 2. Solar highlight ───────────────────────────────────────────── */}
-        {/* Req 1.1c: "Clean Energy, Clear Savings" section */}
+        {/* Req 1.1c: variant=fadeLeft for text, fadeRight for motif */}
         <section
           aria-label="Solar energy solutions"
           className="bg-[var(--bg)] py-16 md:py-24"
         >
           <div className="container-content grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
+            <ScrollReveal variant="fadeLeft">
               <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[var(--fg)] mb-4">
                 Clean Energy, Clear Savings
               </h2>
               <p className="text-lg text-[var(--fg-muted)] mb-6">
                 We design, supply, and commission rooftop solar systems that cut
-                your electricity bill from day one. With 500+ installations across
-                India, our engineers size every system exactly for your load profile
-                — and our calculator shows you the numbers before you commit.
+                your electricity bill from day one. Our engineers size every system
+                exactly for your load profile — and our calculator shows you the
+                numbers before you commit.
               </p>
               <Link
                 href="/solar"
@@ -177,28 +179,27 @@ export default function HomePage() {
               >
                 Explore Solar →
               </Link>
-            </div>
-            {/* SVG decorative motif (§5.5 — replaces raster gradient placeholder) */}
-            <DecorativeMotif
-              variant="solar"
-              className="rounded-xl h-64 md:h-80"
-            />
+            </ScrollReveal>
+            <ScrollReveal variant="scale" delay={0.1}>
+              <DecorativeMotif variant="solar" className="rounded-xl h-64 md:h-80" />
+            </ScrollReveal>
           </div>
         </section>
 
-        {/* ── 4. Future Technologies teaser ───────────────────────────────── */}
-        {/* Req 1.1d: "Building What's Next" */}
+        {/* ── 3. Future Technologies teaser ───────────────────────────────── */}
+        {/* Req 1.1d: variant=blur for motif, fadeRight for text */}
         <section
           aria-label="Future technologies"
           className="bg-[var(--bg-subtle)] py-16 md:py-24"
         >
           <div className="container-content grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* SVG decorative motif (§5.5 — replaces raster gradient placeholder) */}
-            <DecorativeMotif
-              variant="tech"
-              className="rounded-xl h-64 md:h-80 order-last md:order-first"
-            />
-            <div>
+            <ScrollReveal variant="blur" delay={0.05}>
+              <DecorativeMotif
+                variant="tech"
+                className="rounded-xl h-64 md:h-80 order-last md:order-first"
+              />
+            </ScrollReveal>
+            <ScrollReveal variant="fadeRight">
               <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[var(--fg)] mb-4">
                 Building What&apos;s Next
               </h2>
@@ -213,35 +214,44 @@ export default function HomePage() {
               >
                 Discover Future Technologies →
               </Link>
-            </div>
+            </ScrollReveal>
           </div>
         </section>
 
-        {/* ── 5. Why Tribhuban feature grid ───────────────────────────────── */}
-        {/* Req 1.1e: 4 feature cards */}
+        {/* ── 4. Why Tribhuban feature grid ───────────────────────────────── */}
+        {/* Req 1.1e: staggered card entrance */}
         <section
           aria-label="Why Tribhuban Concepts"
           className="bg-[var(--bg)] py-16 md:py-24"
         >
           <div className="container-content">
-            <div className="text-center mb-12">
-              <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[var(--fg)] mb-3">
-                Why Tribhuban Concepts
-              </h2>
-              <p className="text-lg text-[var(--fg-muted)] max-w-xl mx-auto">
-                Engineering excellence grounded in Indian heritage, driven by global ambition.
-              </p>
-            </div>
-            <ul
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 list-none p-0 m-0"
-              role="list"
+            <ScrollReveal variant="fadeUp">
+              <div className="text-center mb-12">
+                <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[var(--fg)] mb-3">
+                  Why Tribhuban Concepts
+                </h2>
+                <p className="text-lg text-[var(--fg-muted)] max-w-xl mx-auto">
+                  Engineering excellence grounded in Indian heritage, driven by global ambition.
+                </p>
+              </div>
+            </ScrollReveal>
+            <StaggerGroup
+              variant="scale"
+              stagger={0.09}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+              as="ul"
             >
               {features.map((feature) => (
                 <li
                   key={feature.title}
-                  className="rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] p-6"
+                  className="rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] p-6
+                             hover:border-[var(--accent)]/40 hover:shadow-[var(--shadow-md)]
+                             transition-all duration-300 cursor-default group"
                 >
-                  <span aria-hidden="true" className="text-3xl mb-4 block">
+                  <span
+                    aria-hidden="true"
+                    className="text-3xl mb-4 block transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3 origin-left"
+                  >
                     {feature.icon}
                   </span>
                   <h3 className="font-display text-lg font-semibold text-[var(--fg)] mb-2">
@@ -252,46 +262,48 @@ export default function HomePage() {
                   </p>
                 </li>
               ))}
-            </ul>
+            </StaggerGroup>
           </div>
         </section>
 
-        {/* ── 6. Featured content section ─────────────────────────────────── */}
-        {/*
-          Req 1.1f & 1.5: "Latest Insights" — 3 static placeholder article cards
-          linking to /blog. If fetch fails or times out, section is omitted.
-          Currently uses static placeholder data since backend isn't integrated yet.
-        */}
+        {/* ── 5. Latest Insights ───────────────────────────────────────────── */}
+        {/* Req 1.1f: clipUp heading + staggered article cards */}
         <section
           aria-label="Latest insights"
           className="bg-[var(--bg-subtle)] py-16 md:py-24"
         >
           <div className="container-content">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="font-display text-3xl font-semibold text-[var(--fg)]">
-                Latest Insights
-              </h2>
-              <Link
-                href="/blog"
-                className="text-sm font-semibold text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
-              >
-                View all →
-              </Link>
-            </div>
-            <ul
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0 m-0"
-              role="list"
+            <ScrollReveal variant="clipUp">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="font-display text-3xl font-semibold text-[var(--fg)]">
+                  Latest Insights
+                </h2>
+                <Link
+                  href="/blog"
+                  className="text-sm font-semibold text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
+                >
+                  View all →
+                </Link>
+              </div>
+            </ScrollReveal>
+            <StaggerGroup
+              variant="fadeUp"
+              stagger={0.1}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              as="ul"
             >
               {placeholderArticles.map((article) => (
                 <li
                   key={article.id}
-                  className="rounded-xl bg-[var(--bg)] border border-[var(--border)] overflow-hidden flex flex-col"
+                  className="rounded-xl bg-[var(--bg)] border border-[var(--border)] overflow-hidden flex flex-col
+                             hover:shadow-[var(--shadow-lg)] hover:-translate-y-1
+                             transition-all duration-300 group"
                 >
-                  {/* SVG decorative motif (§5.5 — article card placeholder) */}
-                  <DecorativeMotif
-                    variant="article"
-                    className="h-44"
-                  />
+                  <div className="overflow-hidden">
+                    <div className="transition-transform duration-500 group-hover:scale-[1.03]">
+                      <DecorativeMotif variant="article" className="h-44" />
+                    </div>
+                  </div>
                   <div className="p-5 flex flex-col flex-1">
                     <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[var(--accent)] mb-3">
                       {article.tag}
@@ -311,52 +323,51 @@ export default function HomePage() {
                   </div>
                 </li>
               ))}
-            </ul>
+            </StaggerGroup>
           </div>
         </section>
 
-        {/* ── 7. Final CTA + Newsletter ────────────────────────────────────── */}
-        {/* Req 1.1g: "Ready to get started?" with NewsletterForm */}
+        {/* ── 6. Final CTA + Newsletter ────────────────────────────────────── */}
+        {/* Req 1.1g: fadeUp CTA */}
         <section
           aria-label="Get started"
           className="bg-[var(--bg)] py-16 md:py-24 border-t border-[var(--border)]"
         >
-          <div className="container-content text-center max-w-2xl mx-auto">
-            <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[var(--fg)] mb-4">
-              Ready to get started?
-            </h2>
-            <p className="text-lg text-[var(--fg-muted)] mb-8">
-              Book a free consultation with our engineers or subscribe to our newsletter
-              for insights on solar, sustainability, and the technologies shaping tomorrow.
-            </p>
-
-            {/* Primary CTA */}
-            <div className="mb-10">
-              <Link href="/consultation" className={primaryBtn}>
-                Book Consultation
-              </Link>
-            </div>
-
-            {/* Divider */}
-            <div className="relative my-8">
-              <div aria-hidden="true" className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[var(--border)]" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-[var(--bg)] px-4 text-sm text-[var(--fg-subtle)]">
-                  or stay in the loop
-                </span>
-              </div>
-            </div>
-
-            {/* Newsletter form */}
-            <div className="max-w-sm mx-auto">
-              <p className="text-sm font-semibold text-[var(--fg-muted)] mb-3">
-                Get solar tips and technology updates
+          <ScrollReveal variant="fadeUp">
+            <div className="container-content text-center max-w-2xl mx-auto">
+              <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[var(--fg)] mb-4">
+                Ready to get started?
+              </h2>
+              <p className="text-lg text-[var(--fg-muted)] mb-8">
+                Book a free consultation with our engineers or subscribe to our newsletter
+                for insights on solar, sustainability, and the technologies shaping tomorrow.
               </p>
-              <NewsletterForm source="home_cta" />
+
+              <div className="mb-10">
+                <Link href="/consultation" className={primaryBtn}>
+                  Book Consultation
+                </Link>
+              </div>
+
+              <div className="relative my-8">
+                <div aria-hidden="true" className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-[var(--border)]" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-[var(--bg)] px-4 text-sm text-[var(--fg-subtle)]">
+                    or stay in the loop
+                  </span>
+                </div>
+              </div>
+
+              <div className="max-w-sm mx-auto">
+                <p className="text-sm font-semibold text-[var(--fg-muted)] mb-3">
+                  Get solar tips and technology updates
+                </p>
+                <NewsletterForm source="home_cta" />
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
         </section>
 
       </main>

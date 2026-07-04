@@ -1,62 +1,99 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Menu } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils/cn';
 import Nav from './Nav';
 import MobileDrawer from './MobileDrawer';
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Header — sticky, backdrop-blur, full implementation.
+   Header — animated sticky header.
 
-   - Server component shell imports client Nav and MobileDrawer islands.
-   - Uses "use client" here because we manage drawerOpen state + triggerRef.
-   - Logo: "Tribhuban Concepts" as a Link using display font.
-   - Nav: hidden on mobile (hidden md:flex), shown desktop.
-   - Mobile hamburger: visible on mobile (flex md:hidden).
-   - Persistent CTA "Book Consultation" + "Contact" always visible on desktop.
+   Animation behaviours:
+   - Hides upward when scrolling down quickly (> 60px), reveals on scroll up
+   - Background intensifies (more blur + opacity) after scrolling 80px
+   - "Book Consultation" CTA has a subtle hover shimmer + scale
+   - Logo has a colour transition on hover
 ───────────────────────────────────────────────────────────────────────────── */
 export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
 
+  // ── Scroll hide / show ────────────────────────────────────────────────────
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      const delta = y - lastScrollY.current;
+
+      // Hide when scrolling down past 120px, show on scroll up
+      if (y > 120 && delta > 6) {
+        setHidden(true);
+      } else if (delta < -4) {
+        setHidden(false);
+      }
+      // Intensify background after 80px
+      setScrolled(y > 80);
+      lastScrollY.current = y;
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <>
-      <header
+      <motion.header
         role="banner"
+        animate={{ y: hidden ? '-100%' : '0%' }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
           'sticky top-0 z-[100] w-full',
           'border-b border-[var(--nav-border)]',
+          'transition-shadow duration-300',
+          scrolled && 'shadow-[0_2px_16px_rgba(46,39,31,0.08)]',
         )}
         style={{
-          backgroundColor: 'var(--nav-bg)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
+          backgroundColor: scrolled
+            ? 'var(--nav-bg)'
+            : 'rgba(254,253,251,0.75)',
+          backdropFilter: scrolled ? 'blur(14px)' : 'blur(6px)',
+          WebkitBackdropFilter: scrolled ? 'blur(14px)' : 'blur(6px)',
+          transition: 'background-color 0.4s ease, backdrop-filter 0.4s ease',
         }}
       >
         <div className="container-content flex items-center justify-between h-16">
-          {/* ── Brand / Logo ─────────────────────────────────────────────── */}
-          <Link
-            href="/"
-            className={cn(
-              'font-display font-semibold text-lg text-[var(--fg)]',
-              'hover:text-[var(--accent)] transition-colors duration-150',
-              'focus-visible:outline-none focus-visible:ring-2',
-              'focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
-              'focus-visible:ring-offset-[var(--bg)] rounded-sm',
-              'shrink-0',
-            )}
-          >
-            Tribhuban Concepts
-          </Link>
 
-          {/* ── Desktop primary nav — hidden on mobile ───────────────────── */}
+          {/* ── Logo ──────────────────────────────────────────────────────── */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+          >
+            <Link
+              href="/"
+              className={cn(
+                'font-display font-semibold text-lg text-[var(--fg)]',
+                'hover:text-[var(--accent)] transition-colors duration-200',
+                'focus-visible:outline-none focus-visible:ring-2',
+                'focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
+                'focus-visible:ring-offset-[var(--bg)] rounded-sm shrink-0',
+              )}
+            >
+              Tribhuban Concepts
+            </Link>
+          </motion.div>
+
+          {/* ── Desktop nav ───────────────────────────────────────────────── */}
           <div className="hidden md:flex items-center">
             <Nav />
           </div>
 
-          {/* ── Desktop actions — hidden on mobile ───────────────────────── */}
+          {/* ── Desktop actions ───────────────────────────────────────────── */}
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/contact"
@@ -70,31 +107,50 @@ export default function Header() {
             >
               Contact
             </Link>
-            <Link
-              href="/consultation"
-              className={cn(
-                'inline-flex items-center justify-center',
-                'h-9 px-4 rounded-md',
-                'text-sm font-semibold',
-                'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)]',
-                'hover:bg-[var(--btn-primary-hover)] transition-colors duration-150',
-                'focus-visible:outline-none focus-visible:ring-2',
-                'focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
-                'focus-visible:ring-offset-[var(--bg)]',
-              )}
+
+            {/* Animated primary CTA */}
+            <motion.div
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
             >
-              Book Consultation
-            </Link>
+              <Link
+                href="/consultation"
+                className={cn(
+                  'relative inline-flex items-center justify-center overflow-hidden',
+                  'h-9 px-4 rounded-md text-sm font-semibold',
+                  'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)]',
+                  'hover:bg-[var(--btn-primary-hover)] transition-colors duration-150',
+                  'focus-visible:outline-none focus-visible:ring-2',
+                  'focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
+                  'focus-visible:ring-offset-[var(--bg)]',
+                  // shimmer overlay via pseudo — handled in globals.css
+                  'group',
+                )}
+              >
+                <span className="relative z-10">Book Consultation</span>
+                {/* shimmer sweep on hover */}
+                <motion.span
+                  className="absolute inset-0 bg-white/10"
+                  initial={{ x: '-100%', skewX: -15 }}
+                  whileHover={{ x: '200%' }}
+                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  aria-hidden="true"
+                />
+              </Link>
+            </motion.div>
           </div>
 
-          {/* ── Mobile hamburger — visible on mobile only ─────────────────── */}
-          <button
+          {/* ── Mobile hamburger ──────────────────────────────────────────── */}
+          <motion.button
             ref={hamburgerRef}
             type="button"
             aria-label="Open navigation menu"
             aria-expanded={drawerOpen}
             aria-controls="mobile-nav-drawer"
             onClick={() => setDrawerOpen(true)}
+            whileTap={{ scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 25 }}
             className={cn(
               'flex md:hidden items-center justify-center',
               'h-10 w-10 rounded-md',
@@ -105,20 +161,21 @@ export default function Header() {
               'focus-visible:ring-offset-[var(--bg)]',
             )}
           >
-            <Menu className="h-5 w-5" aria-hidden="true" />
-          </button>
+            <motion.div
+              animate={drawerOpen ? { rotate: 90, opacity: 0 } : { rotate: 0, opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Menu className="h-5 w-5" aria-hidden="true" />
+            </motion.div>
+          </motion.button>
         </div>
-      </header>
+      </motion.header>
 
-      {/* ── Mobile drawer — rendered outside header for correct stacking ── */}
       <MobileDrawer
         open={drawerOpen}
         onOpenChange={(open) => {
           setDrawerOpen(open);
-          // Return focus to hamburger trigger when drawer closes
-          if (!open) {
-            requestAnimationFrame(() => hamburgerRef.current?.focus());
-          }
+          if (!open) requestAnimationFrame(() => hamburgerRef.current?.focus());
         }}
         triggerRef={hamburgerRef}
       />

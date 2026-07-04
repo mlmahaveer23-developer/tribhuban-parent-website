@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import NewsletterForm from '@/components/forms/NewsletterForm';
+import ScrollReveal from '@/components/motion/ScrollReveal';
+import StaggerGroup from '@/components/motion/StaggerGroup';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Footer — 4-column layout + utility row.
@@ -12,7 +14,12 @@ export default function Footer() {
       <div className="container-content py-12 md:py-16">
 
         {/* ── 4-column grid ─────────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <StaggerGroup
+          variant="fadeUp"
+          stagger={0.07}
+          delay={0.05}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"
+        >
 
           {/* Column 1 — Company */}
           <div>
@@ -184,28 +191,30 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-        </div>
+        </StaggerGroup>
 
         {/* ── Utility row ───────────────────────────────────────────────── */}
-        <div className="border-t border-[var(--border)] pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="space-y-1">
-            <p className="text-sm font-semibold text-[var(--fg)]">Tribhuban Concepts</p>
-            <p className="text-xs text-[var(--fg-subtle)]">
-              &copy; {new Date().getFullYear()} Tribhuban Concepts. All rights reserved.
-            </p>
-            <p className="text-xs text-[var(--fg-subtle)]">
-              Technology that reaches everywhere — Swarga, Martya, Patala.
-            </p>
-          </div>
+        <ScrollReveal variant="fadeUp" delay={0.1}>
+          <div className="border-t border-[var(--border)] pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-[var(--fg)]">Tribhuban Concepts</p>
+              <p className="text-xs text-[var(--fg-subtle)]">
+                &copy; {new Date().getFullYear()} Tribhuban Concepts. All rights reserved.
+              </p>
+              <p className="text-xs text-[var(--fg-subtle)]">
+                Technology that reaches everywhere — Swarga, Martya, Patala.
+              </p>
+            </div>
 
-          {/* Newsletter signup */}
-          <div className="w-full md:w-auto md:max-w-sm">
-            <p className="text-xs font-semibold text-[var(--fg-muted)] mb-2">
-              Stay up to date
-            </p>
-            <NewsletterForm source="footer" />
+            {/* Newsletter signup */}
+            <div className="w-full md:w-auto md:max-w-sm">
+              <p className="text-xs font-semibold text-[var(--fg-muted)] mb-2">
+                Stay up to date
+              </p>
+              <NewsletterForm source="footer" />
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </footer>
   );
