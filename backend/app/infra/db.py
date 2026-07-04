@@ -60,6 +60,7 @@ class Base(AsyncAttrs, DeclarativeBase):
 # ── Engine ───────────────────────────────────────────────────────────────────
 
 
+@lru_cache(maxsize=1)
 def _build_engine():
     settings = get_settings()
     return create_async_engine(
@@ -72,17 +73,36 @@ def _build_engine():
     )
 
 
+def get_engine():
+    """Return the shared async engine, building it on first call."""
+    return _build_engine()
+
+
+# Lazy engine — not created at import time to avoid blocking startup
+# when DATABASE_URL isn't available yet.
 engine = _build_engine()
 
 # ── Session factory ──────────────────────────────────────────────────────────
 
-AsyncSessionLocal = async_sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-    autoflush=False,
-    autocommit=False,
-)
+def _get_session_maker():
+    return async_sessionmaker(
+        bind=get_engine(),
+        class_=AsyncSession,
+        expire_on_commit=False,
+        autoflush=False,
+        autocommit=False,
+    )
+
+
+@lru_cache(maxsize=1)
+def _cached_session_maker():
+    return _get_session_maker()
+
+
+# Alias used by system.py ready endpoint
+AsyncSessionFactory = _cached_session_maker()
+
+AsyncSessionLocal = AsyncSessionFactory
 
 
 # ── FastAPI dependency ───────────────────────────────────────────────────────
@@ -90,7 +110,8 @@ AsyncSessionLocal = async_sessionmaker(
 
 async def get_db_session() -> AsyncIterator[AsyncSession]:
     """Yield an async DB session; commit on success, rollback on exception."""
-    async with AsyncSessionLocal() as session:
+    session_maker = _cached_session_maker()
+    async with session_maker() as session:
         try:
             yield session
             await session.commit()
@@ -123,7 +144,9 @@ get_db = get_db_session
 __all__ = [
     "Base",
     "engine",
+    "get_engine",
     "AsyncSessionLocal",
+    "AsyncSessionFactory",
     "AsyncSession",
     "get_db_session",
     "get_db",

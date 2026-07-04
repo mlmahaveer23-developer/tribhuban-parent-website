@@ -42,18 +42,27 @@ def _build_redis_client() -> RedisClient:
 
 
 # ── Module-level client instance ─────────────────────────────────────────────
-# ``redis_client`` is a lazily-initialised singleton.  It is *not* created at
-# module import time to avoid connecting before settings are loaded; the first
-# call to any public function will build it.  Callers that need the raw client
-# outside a FastAPI dependency can access it via this name.
+# Lazily initialised on first access — NOT at module import time.
+# This avoids blocking startup when REDIS_URL isn't yet available.
 #
 # Usage:
-#   from app.infra.cache import redis_client
-#   await redis_client.set("key", "value")
-#
-# Note: in practice, prefer ``Depends(get_redis)`` in FastAPI route handlers
-# to ensure testability and proper lifecycle management.
-redis_client: RedisClient = _build_redis_client()  # type: ignore[assignment]
+#   from app.infra.cache import get_redis_client
+#   client = get_redis_client()
+#   await client.set("key", "value")
+def get_redis_client() -> RedisClient:
+    """Return the shared Redis client, building it on first call."""
+    return _build_redis_client()
+
+
+# Backwards-compat alias so existing imports of `redis_client` still work
+# without triggering a connection at import time.
+class _LazyRedisClient:
+    """Proxy that defers client construction until first attribute access."""
+    def __getattr__(self, name: str):  # type: ignore[override]
+        return getattr(_build_redis_client(), name)
+
+
+redis_client: RedisClient = _LazyRedisClient()  # type: ignore[assignment]
 
 
 # ── FastAPI dependency ───────────────────────────────────────────────────────
