@@ -1,0 +1,362 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # ── Backend lint and tests ──────────────────────────────────────────────────
+  backend:
+    name: Backend — lint, security, and tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── Raw SQL injection lint check ───────────────────────────────────────
+      # Ensures no SQLAlchemy query builds SQL strings via concatenation,
+      # f-strings, or .format() — all queries must use bound parameters.
+      - name: Check for raw SQL string construction
+        run: python scripts/check_raw_sql.py app
+
+      # ── Unit and property-based tests ──────────────────────────────────────
+      - name: Run backend tests
+        env:
+          ENVIRONMENT: development
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/tribhuban_test
+          REDIS_URL: redis://localhost:6379/1
+          SECRET_KEY: ci-test-secret-key-at-least-32-characters-long
+          REVALIDATE_SECRET: ci-test-revalidate-secret
+          SENTRY_DSN: ""
+          OTEL_EXPORTER_OTLP_ENDPOINT: ""
+        run: |
+          pip install pytest pytest-asyncio hypothesis
+          python -m pytest tests/ -v --tb=short
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: tribhuban_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+  # ── Frontend lint and type-check ────────────────────────────────────────────
+  frontend:
+    name: Frontend — type-check and lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_SENTRY_DSN: ""
+
+      # ── Performance budget check (Req 25.1, 25.4) ──────────────────────────
+      # Runs after build so .next/ output exists. Asserts that every route's
+      # route-specific JS (excluding shared/cached framework chunks) is ≤ 130 KB
+      # gzipped. Exits non-zero and prints violating routes on failure.
+      - name: Performance budget — per-route JS ≤ 130 KB gzipped
+        run: npm run test:perf-budget
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_SENTRY_DSN: "" ────────────────────────────────────────
+  # Starts the backend, regenerates frontend/lib/api/__generated__/schema.ts
+  # from the live OpenAPI spec, then fails if the committed file differs.
+  # This guarantees the frontend types are always in sync with the backend.
+  openapi-types:
+    name: OpenAPI — typed client diff check
+    runs-on: ubuntu-latest
+    needs: [backend]
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: tribhuban_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Start backend server
+        working-directory: backend
+        env:
+          ENVIRONMENT: development
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/tribhuban_test
+          REDIS_URL: redis://localhost:6379/1
+          SECRET_KEY: ci-test-secret-key-at-least-32-characters-long
+          REVALIDATE_SECRET: ci-test-revalidate-secret
+          SENTRY_DSN: ""
+          OTEL_EXPORTER_OTLP_ENDPOINT: ""
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          # Wait for the server to be ready (up to 30 seconds)
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8000/api/v1/health && break
+            sleep 1
+          done
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Regenerate typed client from live OpenAPI spec
+        working-directory: frontend
+        env:
+          # Override the default localhost URL in case the port differs
+          OPENAPI_URL: http://localhost:8000/api/v1/openapi.json
+        run: |
+          npx openapi-typescript "$OPENAPI_URL" -o lib/api/__generated__/schema.ts
+
+      - name: Fail if generated types differ from committed types
+        run: |
+          if ! git diff --exit-code frontend/lib/api/__generated__/schema.ts; then
+            echo ""
+            echo "ERROR: The committed OpenAPI types are stale."
+            echo "The backend schema changed but the frontend types were not regenerated."
+            echo ""
+            echo "To fix: run 'npm run generate-api-types' inside frontend/ and commit the result."
+            exit 1
+          fi
+
+  # ── Schemathesis contract fuzzing ──────────────────────────────────────────
+  # Fuzz all /api/v1 endpoints against the live OpenAPI spec and fail if any
+  # endpoint returns an unexpected 5xx response (Req 27.1, 27.2).
+  schemathesis:
+    name: Schemathesis — contract fuzzing
+    runs-on: ubuntu-latest
+    needs: [backend]
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: tribhuban_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Install Schemathesis
+        run: pip install schemathesis==3.38.1
+
+      - name: Start backend server
+        working-directory: backend
+        env:
+          ENVIRONMENT: development
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/tribhuban_test
+          REDIS_URL: redis://localhost:6379/1
+          SECRET_KEY: ci-test-secret-key-at-least-32-characters-long
+          REVALIDATE_SECRET: ci-test-revalidate-secret
+          SENTRY_DSN: ""
+          OTEL_EXPORTER_OTLP_ENDPOINT: ""
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          # Wait for the server to be ready (up to 30 seconds)
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8000/api/v1/health && break
+            sleep 1
+          done
+
+      - name: Run Schemathesis contract fuzzing
+        # --checks not_a_server_error: fail on any unexpected HTTP 5xx response.
+        # --base-url: point at the local test server.
+        # The schema is fetched from the live /api/v1/openapi.json endpoint.
+        run: |
+          schemathesis run http://localhost:8000/api/v1/openapi.json \
+            --checks not_a_server_error \
+            --base-url http://localhost:8000 \
+            --max-response-time 5000 \
+            --hypothesis-max-examples 50 \
+            --junit-xml schemathesis-results.xml
+
+      - name: Upload Schemathesis results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: schemathesis-results
+          path: schemathesis-results.xml
+          retention-days: 14
+
+  # ── Axe-core accessibility audit (Req 24.1–24.7) ───────────────────────────
+  # Builds the frontend, starts the Next.js production server, then runs
+  # Playwright + axe-core against all critical routes to verify zero violations.
+  a11y:
+    name: Accessibility — axe-core audit
+    runs-on: ubuntu-latest
+    needs: [frontend]
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Install Playwright browsers (Chromium + Firefox)
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Build Next.js
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_SENTRY_DSN: ""
+
+      # Start the production server in the background
+      - name: Start Next.js production server
+        run: |
+          npm run start &
+          # Wait for the server to be ready (up to 30 seconds)
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000 > /dev/null 2>&1 && break
+            sleep 1
+          done
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_SENTRY_DSN: ""
+          PORT: 3000
+
+      # Run Playwright axe-core tests — prefers-reduced-motion is set in playwright.config.ts
+      - name: Run axe-core accessibility tests
+        run: npm run test:a11y
+        env:
+          PLAYWRIGHT_CI: "true"
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-a11y-report
+          path: |
+            frontend/playwright-report/
+            frontend/playwright-results/
+          retention-days: 14

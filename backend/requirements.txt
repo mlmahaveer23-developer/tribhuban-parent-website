@@ -1,0 +1,46 @@
+# ── Web framework ─────────────────────────────────────────────────────────────
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+python-multipart==0.0.19
+
+# ── Data validation / settings ────────────────────────────────────────────────
+pydantic==2.10.4
+pydantic-settings==2.7.0
+email-validator==2.2.0
+
+# ── Database ──────────────────────────────────────────────────────────────────
+sqlalchemy==2.0.36
+asyncpg==0.30.0
+psycopg2-binary==2.9.10
+
+# ── Migrations ────────────────────────────────────────────────────────────────
+alembic==1.14.0
+
+# ── Caching / rate limiting ───────────────────────────────────────────────────
+redis==5.2.1
+
+# ── AWS ───────────────────────────────────────────────────────────────────────
+boto3==1.35.93
+botocore==1.35.93
+
+# ── Observability ─────────────────────────────────────────────────────────────
+opentelemetry-api==1.29.0
+opentelemetry-sdk==1.29.0
+opentelemetry-instrumentation-fastapi==0.50b0
+opentelemetry-instrumentation-sqlalchemy==0.50b0
+opentelemetry-instrumentation-redis==0.50b0
+opentelemetry-instrumentation-httpx==0.50b0
+sentry-sdk[fastapi]==2.19.2
+
+# ── Security ─────────────────────────────────────────────────────────────────
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+httpx==0.28.1
+
+# ── Async support ─────────────────────────────────────────────────────────────
+greenlet==3.1.1
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+python-dateutil==2.9.0.post0
+pytz==2024.2
+orjson==3.10.12

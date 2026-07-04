@@ -1,0 +1,27 @@
+# ── Frontend ─────────────────────────────────────────────────────────────────
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+frontend/.env*.local
+frontend/playwright-report/
+frontend/playwright-results/
+frontend/.turbo/
+
+# ── Backend ───────────────────────────────────────────────────────────────────
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/.env
+backend/.venv/
+backend/venv/
+backend/.pytest_cache/
+
+# ── General ───────────────────────────────────────────────────────────────────
+.DS_Store
+*.log
+.env
+.env.local
+.env.*.local
+dist/
+build/
+*.tsbuildinfo
