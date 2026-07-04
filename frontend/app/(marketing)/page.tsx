@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import NewsletterForm from '@/components/forms/NewsletterForm';
 import DecorativeMotif from '@/components/ui/DecorativeMotif';
+import HeroWaveBackground from '@/components/marketing/HeroWaveBackground';
+import HeroContent from '@/components/marketing/HeroContent';
 
 // ── JSON-LD structured data ───────────────────────────────────────────────────
 
@@ -150,28 +152,13 @@ export default function HomePage() {
         {/* Req 1.1a: Hero — H1, subheading, two CTAs */}
         <section
           aria-label="Hero"
-          className="bg-[var(--bg)] py-20 md:py-32"
+          className="relative min-h-[90vh] md:min-h-screen flex items-center overflow-hidden bg-[#fcfaf5]"
         >
-          <div className="container-content text-center">
-            <h1 className="font-display text-5xl sm:text-6xl font-semibold text-[var(--fg)] mb-6 max-w-3xl mx-auto leading-tight">
-              Technology That Reaches Everywhere
-            </h1>
-            <p className="text-lg text-[var(--fg-muted)] max-w-2xl mx-auto mb-10">
-              Tribhuban Concepts is an Indian technology and engineering company
-              bringing solar energy and future technologies to every home and business.
-              Swarga. Martya. Patala.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              {/* Primary CTA */}
-              <Link href="/consultation" className={primaryBtn}>
-                Book Consultation
-              </Link>
-              {/* Secondary ghost button CTA */}
-              <Link href="/solar" className={ghostBtn}>
-                Explore Solar
-              </Link>
-            </div>
-          </div>
+          {/* Interactive dotted wave background (client island) */}
+          <HeroWaveBackground />
+
+          {/* Hero text content (client island for animations) */}
+          <HeroContent />
         </section>
 
         {/* ── 2. Trust / Stat band ─────────────────────────────────────────── */}
