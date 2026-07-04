@@ -40,6 +40,21 @@ class Settings(BaseSettings):
         description="SQLAlchemy async database URL",
     )
     database_pool_size: int = 10
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def fix_database_url(cls, v: str) -> str:
+        """
+        Railway provides DATABASE_URL as postgresql:// or postgres://.
+        SQLAlchemy asyncpg requires postgresql+asyncpg://.
+        Auto-convert so both formats work.
+        """
+        if isinstance(v, str):
+            if v.startswith("postgres://"):
+                return v.replace("postgres://", "postgresql+asyncpg://", 1)
+            if v.startswith("postgresql://") and "+asyncpg" not in v:
+                return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
     database_max_overflow: int = 20
     database_pool_timeout: int = 30
 
