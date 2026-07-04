@@ -1,19 +1,11 @@
 """
 Database infrastructure — SQLAlchemy 2.0 async engine and session factory.
-
-Exports:
-  engine              — AsyncEngine (asyncpg driver)
-  AsyncSessionLocal   — async_sessionmaker factory
-  get_db_session      — FastAPI dependency (async generator)
-  Base                — DeclarativeBase shared by all ORM models
-
-The `updated_at` column is automatically bumped to now() before every UPDATE
-via a SQLAlchemy event listener; callers never need to set it manually.
 """
 from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from datetime import datetime, timezone
+from functools import lru_cache
 
 from sqlalchemy import MetaData, event, inspect
 from sqlalchemy.ext.asyncio import (
@@ -22,14 +14,11 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase
 
 from app.config import get_settings
 
-
 # ── Naming conventions ────────────────────────────────────────────────────────
-# Applied to all auto-generated constraint names so Alembic migrations produce
-# deterministic, portable DDL.  Follows SQLAlchemy recommended convention.
 _NAMING_CONVENTION: dict[str, str] = {
     "ix": "ix_%(column_0_label)s",
     "uq": "uq_%(table_name)s_%(column_0_name)s",
@@ -41,25 +30,12 @@ _NAMING_CONVENTION: dict[str, str] = {
 _metadata = MetaData(naming_convention=_NAMING_CONVENTION)
 
 
-# ── Declarative Base ────────────────────────────────────────────────────────
-
-
+# ── Declarative Base ──────────────────────────────────────────────────────────
 class Base(AsyncAttrs, DeclarativeBase):
-    """Shared declarative base for all ORM models.
-
-    AsyncAttrs is mixed in so async-loaded relationships work without explicit
-    awaiting in most accessor patterns.
-
-    MetaData is initialised with a naming_convention so that Alembic
-    autogenerate produces deterministic, portable constraint names.
-    """
-
     metadata = _metadata
 
 
-# ── Engine ───────────────────────────────────────────────────────────────────
-
-
+# ── Engine (lazy — built on first request, not at import time) ────────────────
 @lru_cache(maxsize=1)
 def _build_engine():
     settings = get_settings()
@@ -74,19 +50,18 @@ def _build_engine():
 
 
 def get_engine():
-    """Return the shared async engine, building it on first call."""
     return _build_engine()
 
 
-# Lazy engine — not created at import time to avoid blocking startup
-# when DATABASE_URL isn't available yet.
-engine = _build_engine()
+# Module-level alias (does NOT call _build_engine at import time)
+engine = property(get_engine)
 
-# ── Session factory ──────────────────────────────────────────────────────────
 
-def _get_session_maker():
+# ── Session factory (lazy) ────────────────────────────────────────────────────
+@lru_cache(maxsize=1)
+def _build_session_maker():
     return async_sessionmaker(
-        bind=get_engine(),
+        bind=_build_engine(),
         class_=AsyncSession,
         expire_on_commit=False,
         autoflush=False,
@@ -94,24 +69,20 @@ def _get_session_maker():
     )
 
 
-@lru_cache(maxsize=1)
-def _cached_session_maker():
-    return _get_session_maker()
+# Aliases used across the codebase
+def get_session_maker():
+    return _build_session_maker()
 
 
-# Alias used by system.py ready endpoint
-AsyncSessionFactory = _cached_session_maker()
-
-AsyncSessionLocal = AsyncSessionFactory
-
-
-# ── FastAPI dependency ───────────────────────────────────────────────────────
+# These are called lazily via get_session_maker()
+AsyncSessionLocal = _build_session_maker
+AsyncSessionFactory = _build_session_maker
 
 
+# ── FastAPI dependency ────────────────────────────────────────────────────────
 async def get_db_session() -> AsyncIterator[AsyncSession]:
     """Yield an async DB session; commit on success, rollback on exception."""
-    session_maker = _cached_session_maker()
-    async with session_maker() as session:
+    async with _build_session_maker()() as session:
         try:
             yield session
             await session.commit()
@@ -120,13 +91,12 @@ async def get_db_session() -> AsyncIterator[AsyncSession]:
             raise
 
 
-# ── updated_at auto-bump event ───────────────────────────────────────────────
+get_db = get_db_session
 
 
+# ── updated_at auto-bump ──────────────────────────────────────────────────────
 @event.listens_for(Base, "before_update", propagate=True)
 def _bump_updated_at(mapper, connection, target):  # noqa: ARG001
-    """Automatically bump updated_at on every ORM-level update."""
-    # Only bump if the model has an updated_at column
     try:
         insp = inspect(type(target))
         if "updated_at" in [c.key for c in insp.mapper.column_attrs]:
@@ -135,19 +105,13 @@ def _bump_updated_at(mapper, connection, target):  # noqa: ARG001
         pass
 
 
-# ── Type alias / convenience re-exports ─────────────────────────────────────
-
-# Alias so router dependencies can use either name:
-#   Depends(get_db_session)  OR  Depends(get_db)
-get_db = get_db_session
-
 __all__ = [
     "Base",
-    "engine",
     "get_engine",
     "AsyncSessionLocal",
     "AsyncSessionFactory",
     "AsyncSession",
     "get_db_session",
     "get_db",
+    "get_session_maker",
 ]

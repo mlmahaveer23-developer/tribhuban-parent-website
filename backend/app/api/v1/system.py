@@ -83,9 +83,9 @@ async def ready(request: Request) -> JSONResponse:
     try:
         from sqlalchemy import text  # noqa: PLC0415
 
-        from app.infra.db import AsyncSessionFactory  # noqa: PLC0415
+        from app.infra.db import get_session_maker  # noqa: PLC0415
 
-        async with AsyncSessionFactory() as session:
+        async with get_session_maker()() as session:
             await session.execute(text("SELECT 1"))
         checks["db"] = "ok"
     except Exception as exc:
