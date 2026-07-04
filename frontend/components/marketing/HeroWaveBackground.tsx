@@ -32,7 +32,6 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
 
     // ── Constants ────────────────────────────────────────────────────────────
     const DOT_COLOR_BASE = { r: 180, g: 150, b: 110 }; // warm copper tone
-    const BACKGROUND_COLOR = 'transparent';             // let CSS bg show through
     const BASE_DOT_RADIUS = 1.8;
     const MAX_EXTRA_RADIUS = 3.2;
     const DOT_SPACING = 22;
