@@ -44,6 +44,7 @@ export type MotionVariants = Variants;
 const REDUCED_TRANSITION: Transition = { duration: 0.15, ease: 'linear' };
 
 function stripMotion(variant: Record<string, unknown>): Record<string, unknown> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { x: _x, y: _y, scale: _s, rotate: _r, skew: _sk, ...rest } = variant as Record<string, unknown>;
   return {
     ...rest,
@@ -217,6 +218,7 @@ export function motionProps(
     if (typeof variant === 'function') {
       reducedVariants[key] = variant;
     } else if (variant && typeof variant === 'object') {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { x: _x, y: _y, scale: _s, rotate: _r, ...rest } = variant as Record<string, unknown>;
       reducedVariants[key] = {
         ...rest,
