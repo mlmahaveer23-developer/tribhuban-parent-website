@@ -61,12 +61,6 @@ export const revalidate = 3600;
 
 // ── Static content ────────────────────────────────────────────────────────────
 
-const stats = [
-  { value: '10+', label: 'Years Experience' },
-  { value: '500+', label: 'Solar Installations' },
-  { value: '₹2Cr+', label: 'Savings Generated' },
-] as const;
-
 const features = [
   {
     icon: '☀️',
@@ -149,7 +143,7 @@ export default function HomePage() {
         {/* Req 1.1a: Hero — H1, subheading, two CTAs */}
         <section
           aria-label="Hero"
-          className="relative min-h-[90vh] md:min-h-screen flex items-center overflow-hidden bg-[#fcfaf5]"
+          className="relative min-h-[85vh] md:min-h-screen flex items-start overflow-hidden bg-[#fcfaf5]"
         >
           {/* Interactive dotted wave background (client island) */}
           <HeroWaveBackground />
@@ -158,32 +152,9 @@ export default function HomePage() {
           <HeroContent />
         </section>
 
-        {/* ── 2. Trust / Stat band ─────────────────────────────────────────── */}
-        {/* Req 1.1b: 3 stats */}
-        <section
-          aria-label="Key statistics"
-          className="bg-[var(--bg-subtle)] border-y border-[var(--border)] py-12"
-        >
-          <div className="container-content">
-            <dl className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <dt className="sr-only">{stat.label}</dt>
-                  <dd>
-                    <span className="block font-display text-4xl font-semibold text-[var(--accent)]">
-                      {stat.value}
-                    </span>
-                    <span className="block text-sm text-[var(--fg-muted)] mt-1">
-                      {stat.label}
-                    </span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </section>
+        {/* ── Stats section removed — company founded 2026, stats not yet accurate ── */}
 
-        {/* ── 3. Solar highlight ───────────────────────────────────────────── */}
+        {/* ── 2. Solar highlight ───────────────────────────────────────────── */}
         {/* Req 1.1c: "Clean Energy, Clear Savings" section */}
         <section
           aria-label="Solar energy solutions"

@@ -294,6 +294,25 @@
     color: inherit;
     text-decoration-skip-ink: auto;
   }
+
+  /* ── Mobile-first touch optimizations ──────────────────────────────────── */
+
+  /* Minimum 44×44px touch targets for all interactive elements */
+  button, [role="button"], a, input, select, textarea {
+    touch-action: manipulation; /* prevents 300ms tap delay on mobile */
+  }
+
+  /* Prevent text size inflation on orientation change (iOS) */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Smooth momentum scrolling on iOS */
+  html, body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

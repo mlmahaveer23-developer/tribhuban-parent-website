@@ -3,9 +3,11 @@
 /**
  * HeroWaveBackground
  *
- * Canvas-based interactive dotted-wave background ported from HeroBG.html.
- * Dots ripple in wave patterns and react to mouse/touch position.
- * Fully respects prefers-reduced-motion — disables animation when active.
+ * Canvas-based interactive dotted-wave background.
+ * Mobile-first: touch events use passive listeners so scroll is never blocked.
+ * On mobile (<768px) animation complexity is halved for 60fps on mid-range devices.
+ * On desktop, mouse interaction ripples the dots.
+ * Respects prefers-reduced-motion — freezes animation when active.
  */
 
 import { useEffect, useRef } from 'react';
@@ -27,20 +29,24 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Respect prefers-reduced-motion
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Mobile: coarser grid + no touch interaction (never block scroll)
+    const isMobile = window.innerWidth < 768;
 
-    // ── Constants ────────────────────────────────────────────────────────────
-    const DOT_COLOR_BASE = { r: 180, g: 150, b: 110 }; // warm copper tone
-    const BASE_DOT_RADIUS = 1.8;
-    const MAX_EXTRA_RADIUS = 3.2;
-    const DOT_SPACING = 22;
-    const BASE_AMPLITUDE = 18;
+    // ── Constants — tuned per device class ───────────────────────────────────
+    const DOT_COLOR_BASE = { r: 180, g: 150, b: 110 };
+    const BASE_DOT_RADIUS = isMobile ? 1.6 : 1.8;
+    const MAX_EXTRA_RADIUS = isMobile ? 2.0 : 3.2;
+    const DOT_SPACING = isMobile ? 28 : 22;        // wider grid on mobile → fewer dots → faster
+    const BASE_AMPLITUDE = isMobile ? 12 : 18;
     const INTERACTIVE_AMPLITUDE_BOOST = 22;
-    const WAVE_SPEED = reducedMotion ? 0 : 0.025;
+    const WAVE_SPEED = reducedMotion ? 0 : (isMobile ? 0.018 : 0.025);
     const INTERACTION_RADIUS = 160;
+    // Skip every-other frame on mobile to halve GPU load
+    const FRAME_SKIP = isMobile ? 2 : 1;
 
     let time = 0;
+    let frameCount = 0;
     let width = 0;
     let height = 0;
     let mouseX: number | null = null;
@@ -48,7 +54,6 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
     let targetMouseX: number | null = null;
     let targetMouseY: number | null = null;
 
-    // ── Resize ───────────────────────────────────────────────────────────────
     function resize() {
       const rect = container!.getBoundingClientRect();
       width = rect.width;
@@ -57,7 +62,6 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
       canvas!.height = height;
     }
 
-    // ── Mouse / touch ────────────────────────────────────────────────────────
     function updateTarget(clientX: number, clientY: number) {
       const rect = container!.getBoundingClientRect();
       targetMouseX = Math.max(0, Math.min(clientX - rect.left, width));
@@ -66,13 +70,12 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
 
     function smoothMouse() {
       if (targetMouseX !== null && targetMouseY !== null) {
-        const lerpFactor = 0.12;
         if (mouseX === null || mouseY === null) {
           mouseX = targetMouseX;
           mouseY = targetMouseY;
         } else {
-          mouseX += (targetMouseX - mouseX) * lerpFactor;
-          mouseY += (targetMouseY - mouseY) * lerpFactor;
+          mouseX += (targetMouseX - mouseX) * 0.12;
+          mouseY += (targetMouseY - mouseY) * 0.12;
         }
       } else if (mouseX !== null && mouseY !== null) {
         const cx = width / 2;
@@ -88,17 +91,7 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
 
     const onMouseMove = (e: MouseEvent) => updateTarget(e.clientX, e.clientY);
     const onMouseLeave = () => { targetMouseX = null; targetMouseY = null; };
-    const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      if (e.touches.length > 0) updateTarget(e.touches[0].clientX, e.touches[0].clientY);
-    };
-    const onTouchEnd = (e: TouchEvent) => {
-      e.preventDefault();
-      targetMouseX = null;
-      targetMouseY = null;
-    };
 
-    // ── Wave offset ──────────────────────────────────────────────────────────
     function getWaveOffset(gridX: number, gridY: number, t: number, ampMul: number): number {
       const wave1 = Math.sin(gridX * 0.15 + t * 0.7) * Math.cos(gridY * 0.12 + t * 0.5);
       const wave2 = Math.cos(gridX * 0.2 - t * 0.55) * Math.sin(gridY * 0.18 + t * 0.65);
@@ -106,7 +99,7 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
       const baseOffset = (wave1 * 0.7 + wave2 * 0.7 + wave3 * 0.5) * BASE_AMPLITUDE * ampMul;
 
       let boost = 0;
-      if (mouseX !== null && mouseY !== null) {
+      if (!isMobile && mouseX !== null && mouseY !== null) {
         const cols = Math.floor(width / DOT_SPACING);
         const rows = Math.floor(height / DOT_SPACING);
         const marginX = (width - cols * DOT_SPACING) / 2 + DOT_SPACING / 2;
@@ -115,14 +108,14 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
         const py = marginY + gridY * DOT_SPACING;
         const dist = Math.hypot(px - mouseX, py - mouseY);
         if (dist < INTERACTION_RADIUS) {
-          const smooth = (1 - dist / INTERACTION_RADIUS) ** 2 * (3 - 2 * (1 - dist / INTERACTION_RADIUS));
+          const t2 = 1 - dist / INTERACTION_RADIUS;
+          const smooth = t2 * t2 * (3 - 2 * t2);
           boost = Math.sin(dist * 0.25 + t * 2.5) * smooth * INTERACTIVE_AMPLITUDE_BOOST;
         }
       }
       return baseOffset + boost;
     }
 
-    // ── Draw ─────────────────────────────────────────────────────────────────
     function draw() {
       if (!ctx || width === 0 || height === 0) return;
       ctx.clearRect(0, 0, width, height);
@@ -138,7 +131,7 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
           const baseY = marginY + row * DOT_SPACING;
 
           const vertShift = getWaveOffset(col, row, time, 1.0);
-          const horizShift = getWaveOffset(col + 0.5, row + 0.3, time * 0.9, 0.4) * 0.25;
+          const horizShift = isMobile ? 0 : getWaveOffset(col + 0.5, row + 0.3, time * 0.9, 0.4) * 0.25;
 
           const finalX = baseX + horizShift;
           const finalY = baseY + vertShift;
@@ -147,13 +140,12 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
           const radius = BASE_DOT_RADIUS + intensity * MAX_EXTRA_RADIUS;
           const alpha = Math.min(0.8, 0.45 + intensity * 0.25);
 
-          // Blend to slightly darker copper near mouse
           let r = DOT_COLOR_BASE.r;
           let g = DOT_COLOR_BASE.g;
           let b = DOT_COLOR_BASE.b;
           let a = alpha;
 
-          if (mouseX !== null && mouseY !== null) {
+          if (!isMobile && mouseX !== null && mouseY !== null) {
             const dist = Math.hypot(finalX - mouseX, finalY - mouseY);
             if (dist < INTERACTION_RADIUS * 0.9) {
               const blend = Math.max(0, 1 - dist / (INTERACTION_RADIUS * 0.8));
@@ -169,8 +161,7 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
           ctx.fillStyle = `rgba(${r},${g},${b},${a})`;
           ctx.fill();
 
-          // Subtle specular highlight on taller dots
-          if (intensity > 0.45 && radius > 2.2) {
+          if (!isMobile && intensity > 0.45 && radius > 2.2) {
             ctx.beginPath();
             ctx.arc(finalX - 0.4, finalY - 0.5, radius * 0.35, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(255,248,235,0.45)';
@@ -180,23 +171,26 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
       }
     }
 
-    // ── Animation loop ───────────────────────────────────────────────────────
     function animate() {
+      frameCount++;
       time += WAVE_SPEED;
-      smoothMouse();
-      draw();
+      if (frameCount % FRAME_SKIP === 0) {
+        smoothMouse();
+        draw();
+      }
       rafRef.current = requestAnimationFrame(animate);
     }
 
-    // ── Init ─────────────────────────────────────────────────────────────────
     resize();
     animate();
 
-    container.addEventListener('mousemove', onMouseMove);
-    container.addEventListener('mouseleave', onMouseLeave);
-    container.addEventListener('touchmove', onTouchMove, { passive: false });
-    container.addEventListener('touchend', onTouchEnd);
-    container.addEventListener('touchcancel', onTouchEnd);
+    // Desktop only: mouse interaction on the hero section
+    if (!isMobile) {
+      container.addEventListener('mousemove', onMouseMove);
+      container.addEventListener('mouseleave', onMouseLeave);
+    }
+
+    // Mobile: NO touch listeners on canvas — scroll must never be blocked
     window.addEventListener('resize', resize);
 
     let ro: ResizeObserver | null = null;
@@ -209,9 +203,6 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
       cancelAnimationFrame(rafRef.current);
       container.removeEventListener('mousemove', onMouseMove);
       container.removeEventListener('mouseleave', onMouseLeave);
-      container.removeEventListener('touchmove', onTouchMove);
-      container.removeEventListener('touchend', onTouchEnd);
-      container.removeEventListener('touchcancel', onTouchEnd);
       window.removeEventListener('resize', resize);
       ro?.disconnect();
     };
@@ -221,7 +212,8 @@ export default function HeroWaveBackground({ className }: HeroWaveBackgroundProp
     <div
       ref={containerRef}
       aria-hidden="true"
-      className={`absolute inset-0 overflow-hidden pointer-events-auto ${className ?? ''}`}
+      // pointer-events-none on mobile — canvas never captures touch events
+      className={`absolute inset-0 overflow-hidden pointer-events-none md:pointer-events-auto ${className ?? ''}`}
     >
       <canvas
         ref={canvasRef}
