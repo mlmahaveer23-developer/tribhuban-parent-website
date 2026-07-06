@@ -1,13 +1,5 @@
 'use client';
 
-/**
- * Nav — desktop primary navigation.
- *
- * Renders MegaMenu (Businesses/Products/Resources/Partners/About) + Contact link.
- * The parent Header gives this a flex-1 + justify-center container so
- * MegaMenu.Root stretches appropriately for the Viewport to anchor correctly.
- */
-
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,7 +7,12 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils/cn';
 import MegaMenu from './MegaMenu';
 
-export default function Nav() {
+interface NavProps {
+  /** Passed from Header — full-width div that receives the mega menu Viewport */
+  viewportContainerRef: React.RefObject<HTMLDivElement | null>;
+}
+
+export default function Nav({ viewportContainerRef }: NavProps) {
   const pathname = usePathname();
   const isContactActive = pathname === '/contact';
   const [hoveredContact, setHoveredContact] = useState(false);
@@ -23,9 +20,9 @@ export default function Nav() {
   return (
     <nav aria-label="Primary navigation" className="flex items-center gap-0">
       {/* Mega menu — Businesses, Products, Resources, Partners, About */}
-      <MegaMenu />
+      <MegaMenu viewportContainerRef={viewportContainerRef} />
 
-      {/* Contact — simple animated link */}
+      {/* Contact — plain animated link */}
       <Link
         href="/contact"
         aria-current={isContactActive ? 'page' : undefined}
