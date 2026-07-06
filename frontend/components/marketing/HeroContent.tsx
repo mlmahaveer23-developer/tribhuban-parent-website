@@ -71,15 +71,8 @@ const secondaryBtn =
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ' +
   'focus-visible:ring-offset-2 focus-visible:ring-offset-[#fcfaf5]';
 
-// Tertiary: Sign In — subtle text link style with same touch area
-const tertiaryBtn =
-  'inline-flex items-center justify-center min-h-[52px] min-w-[44px] px-6 ' +
-  'rounded-full text-base sm:text-lg font-semibold ' +
-  'text-[#5A4E3F] bg-transparent ' +
-  'hover:text-[#B45309] hover:bg-[#B45309]/5 ' +
-  'active:scale-[0.97] transition-all duration-200 ' +
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] ' +
-  'focus-visible:ring-offset-2 focus-visible:ring-offset-[#fcfaf5]';
+// Tertiary removed — hero has only 2 CTAs per spec
+
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -167,14 +160,9 @@ export default function HeroContent() {
               Explore Solar
             </Link>
 
-            {/* Secondary: Sign Up */}
-            <Link href="/solar/calculator" className={`${secondaryBtn} w-full sm:w-auto`}>
-              Try Calculator
-            </Link>
-
-            {/* Tertiary: Sign In */}
-            <Link href="/consultation" className={`${tertiaryBtn} w-full sm:w-auto`}>
-              Sign In
+            {/* Secondary: Start for Free → signup */}
+            <Link href="/signup" className={`${secondaryBtn} w-full sm:w-auto`}>
+              Start for Free
             </Link>
           </motion.div>
 

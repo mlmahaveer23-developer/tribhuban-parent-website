@@ -94,18 +94,19 @@ export default function Header() {
           </div>
 
           {/* ── Desktop actions ───────────────────────────────────────────── */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
+            {/* Login */}
             <Link
-              href="/contact"
+              href="/login"
               className={cn(
                 'text-sm font-medium text-[var(--fg)]',
                 'hover:text-[var(--accent)] transition-colors duration-150',
                 'focus-visible:outline-none focus-visible:ring-2',
                 'focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
-                'focus-visible:ring-offset-[var(--bg)] rounded-sm px-2 py-1',
+                'focus-visible:ring-offset-[var(--bg)] rounded-sm px-2.5 py-1.5',
               )}
             >
-              Contact
+              Login
             </Link>
 
             {/* Animated primary CTA */}
@@ -124,12 +125,10 @@ export default function Header() {
                   'focus-visible:outline-none focus-visible:ring-2',
                   'focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
                   'focus-visible:ring-offset-[var(--bg)]',
-                  // shimmer overlay via pseudo — handled in globals.css
                   'group',
                 )}
               >
                 <span className="relative z-10">Book Consultation</span>
-                {/* shimmer sweep on hover */}
                 <motion.span
                   className="absolute inset-0 bg-white/10"
                   initial={{ x: '-100%', skewX: -15 }}
