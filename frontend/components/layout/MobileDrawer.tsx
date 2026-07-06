@@ -25,7 +25,7 @@ const navSections = [
     id: 'businesses',
     label: 'Businesses',
     items: [
-      { href: '/businesses/rooftop-solar',      label: 'Rooftop Solar',                    desc: 'Solar installation services.' },
+      { href: '/solar',                           label: 'Rooftop Solar',                    desc: 'Solar installation services.' },
       { href: '/businesses/fmcg-distribution',  label: 'FMCG Online Distribution',          desc: 'Digital FMCG supply chain.' },
       { href: '/businesses/hrds',               label: 'HRDS',                              desc: 'Home to Homeless solutions.' },
       { href: '/businesses/pink-moon-vision',   label: 'Pink Moon Vision',                  desc: 'Creative tech & media.' },
@@ -49,11 +49,11 @@ const navSections = [
     id: 'resources',
     label: 'Resources',
     items: [
-      { href: '/blog',         label: 'Blog',          desc: '' },
-      { href: '/knowledge',    label: 'Guides',        desc: '' },
-      { href: '/knowledge',    label: 'Documentation', desc: '' },
-      { href: '/support/faq',  label: 'FAQs',          desc: '' },
-      { href: '/knowledge',    label: 'Downloads',     desc: '' },
+      { href: '/blog',               label: 'Blog',          desc: 'Insights on solar, tech & sustainability.' },
+      { href: '/knowledge/guides',   label: 'Guides',        desc: 'Step-by-step guides for every journey.' },
+      { href: '/knowledge/docs',     label: 'Documentation', desc: 'Technical docs and references.' },
+      { href: '/support/faq',        label: 'FAQs',          desc: 'Answers to common questions.' },
+      { href: '/knowledge/downloads', label: 'Downloads',    desc: 'Brochures, datasheets and resources.' },
     ],
   },
   {

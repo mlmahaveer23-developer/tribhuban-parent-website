@@ -27,7 +27,7 @@ import { cn } from '@/lib/utils/cn';
 // ── Nav data ──────────────────────────────────────────────────────────────────
 
 const businesses = [
-  { href: '/businesses/rooftop-solar',        title: 'Rooftop Solar',                description: 'End-to-end residential & commercial solar installation.', icon: '☀️' },
+  { href: '/solar',                           title: 'Rooftop Solar',                description: 'End-to-end residential & commercial solar installation.', icon: '☀️' },
   { href: '/businesses/fmcg-distribution',    title: 'FMCG Online Distribution',      description: 'Digital-first FMCG supply chain and e-commerce.', icon: '📦' },
   { href: '/businesses/hrds',                 title: 'HRDS',                          description: 'Home to Homeless — housing & livelihood solutions.', icon: '🏠' },
   { href: '/businesses/pink-moon-vision',     title: 'Pink Moon Vision',              description: 'Creative technology and media ventures.', icon: '🌙' },
@@ -48,11 +48,11 @@ const productsFuture = [
 ];
 
 const resources = [
-  { href: '/blog',         title: 'Blog',          description: 'Insights on solar, tech & sustainability.' },
-  { href: '/knowledge',    title: 'Guides',         description: 'Step-by-step guides for every journey.' },
-  { href: '/knowledge',    title: 'Documentation',  description: 'Technical docs and API references.' },
-  { href: '/support/faq',  title: 'FAQs',           description: 'Answers to common questions.' },
-  { href: '/knowledge',    title: 'Downloads',      description: 'Brochures, datasheets and resources.' },
+  { href: '/blog',              title: 'Blog',           description: 'Insights on solar, tech & sustainability.' },
+  { href: '/knowledge/guides',  title: 'Guides',         description: 'Step-by-step guides for every journey.' },
+  { href: '/knowledge/docs',    title: 'Documentation',  description: 'Technical docs and references.' },
+  { href: '/support/faq',       title: 'FAQs',           description: 'Answers to common questions.' },
+  { href: '/knowledge/downloads', title: 'Downloads',    description: 'Brochures, datasheets and resources.' },
 ];
 
 const partners = [
