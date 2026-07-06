@@ -121,7 +121,7 @@ export const solarBlogPosts: BlogPost[] = [
       },
       {
         heading: 'BESS Mandate for 5 kW+ Systems',
-        text: 'The OERC\'s 2026 DRES Regulations mandate Battery Energy Storage Systems for residential systems of 5 kW and above.',
+        text: 'The OERC\'s 2026 DRES Regulations mandate Battery Energy Storage Systems for residential systems of 5 kW and above. BESS units must charge during daytime solar hours and discharge during evening peak. The added cost of hybrid inverter + lithium-ion BESS increases gross project cost by ₹40,000–₹70,000 for standard residential systems.',
         table: {
           headers: ['System Size', 'Min. BESS Capacity', 'Energy Storage'],
           rows: [
@@ -131,7 +131,6 @@ export const solarBlogPosts: BlogPost[] = [
             ['>100 kW to 500 kW', '20 kW', '40 kWh'],
           ],
         },
-        text: 'BESS units must charge during daytime solar hours and discharge during evening peak. The added cost of hybrid inverter + lithium-ion BESS increases gross project cost by ₹40,000–₹70,000 for standard residential systems.',
       },
       {
         heading: 'Standard Application Process (End-to-End)',
