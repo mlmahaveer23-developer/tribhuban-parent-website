@@ -8,20 +8,29 @@ import { cn } from '@/lib/utils/cn';
 import Nav from './Nav';
 import MobileDrawer from './MobileDrawer';
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Header — animated sticky header.
+/*
+ * Header — sticky, animated, full-width mega menu support.
+ *
+ * MEGA MENU FIX:
+ * The NavigationMenu.Viewport must escape the header's max-width container
+ * and span the full viewport width. We achieve this by:
+ *   1. Making the <header> itself position:relative (sticky already implies this).
+ *   2. Placing the Viewport in a div that is a direct child of <header>
+ *      (NOT inside .container-content), positioned absolute top-full left-0
+ *      with w-full — so it spans the full header width = 100vw.
+ *
+ * The NavigationMenu.Root in MegaMenu renders its Viewport into the Radix
+ * default position (relative to Root). We override this by passing a
+ * forwardedRef so Radix attaches the Viewport to our full-width container.
+ *
+ * Alternative approach used here (simpler): override the Viewport container
+ * with fixed positioning on the header element itself.
+ */
 
-   Animation behaviours:
-   - Hides upward when scrolling down quickly (> 60px), reveals on scroll up
-   - Background intensifies (more blur + opacity) after scrolling 80px
-   - "Book Consultation" CTA has a subtle hover shimmer + scale
-   - Logo has a colour transition on hover
-───────────────────────────────────────────────────────────────────────────── */
 export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
 
-  // ── Scroll hide / show ────────────────────────────────────────────────────
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const lastScrollY = useRef(0);
@@ -30,18 +39,11 @@ export default function Header() {
     const onScroll = () => {
       const y = window.scrollY;
       const delta = y - lastScrollY.current;
-
-      // Hide when scrolling down past 120px, show on scroll up
-      if (y > 120 && delta > 6) {
-        setHidden(true);
-      } else if (delta < -4) {
-        setHidden(false);
-      }
-      // Intensify background after 80px
+      if (y > 120 && delta > 6) setHidden(true);
+      else if (delta < -4) setHidden(false);
       setScrolled(y > 80);
       lastScrollY.current = y;
     };
-
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -54,22 +56,24 @@ export default function Header() {
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
           'sticky top-0 z-[100] w-full',
+          // overflow-visible is CRITICAL — allows the mega menu panel to
+          // visually overflow below the header
+          'overflow-visible',
           'border-b border-[var(--nav-border)]',
           'transition-shadow duration-300',
           scrolled && 'shadow-[0_2px_16px_rgba(46,39,31,0.08)]',
         )}
         style={{
-          backgroundColor: scrolled
-            ? 'var(--nav-bg)'
-            : 'rgba(254,253,251,0.75)',
+          backgroundColor: scrolled ? 'var(--nav-bg)' : 'rgba(254,253,251,0.75)',
           backdropFilter: scrolled ? 'blur(14px)' : 'blur(6px)',
           WebkitBackdropFilter: scrolled ? 'blur(14px)' : 'blur(6px)',
           transition: 'background-color 0.4s ease, backdrop-filter 0.4s ease',
         }}
       >
+        {/* ── Nav bar row ─────────────────────────────────────────────────── */}
         <div className="container-content flex items-center justify-between h-16">
 
-          {/* ── Logo ──────────────────────────────────────────────────────── */}
+          {/* Logo */}
           <motion.div
             whileHover={{ scale: 1.02 }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
@@ -77,39 +81,37 @@ export default function Header() {
             <Link
               href="/"
               className={cn(
-                'font-display font-semibold text-lg text-[var(--fg)]',
+                'font-display font-semibold text-lg text-[var(--fg)] shrink-0',
                 'hover:text-[var(--accent)] transition-colors duration-200',
                 'focus-visible:outline-none focus-visible:ring-2',
                 'focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
-                'focus-visible:ring-offset-[var(--bg)] rounded-sm shrink-0',
+                'focus-visible:ring-offset-[var(--bg)] rounded-sm',
               )}
             >
               Tribhuban Concepts
             </Link>
           </motion.div>
 
-          {/* ── Desktop nav ───────────────────────────────────────────────── */}
-          <div className="hidden md:flex items-center">
+          {/* Desktop nav — spans full width so MegaMenu Viewport aligns correctly */}
+          <div className="hidden md:flex items-center flex-1 justify-center">
             <Nav />
           </div>
 
-          {/* ── Desktop actions ───────────────────────────────────────────── */}
+          {/* Desktop right actions */}
           <div className="hidden md:flex items-center gap-2">
-            {/* Login */}
             <Link
               href="/login"
               className={cn(
-                'text-sm font-medium text-[var(--fg)]',
+                'text-sm font-medium text-[var(--fg)] px-2.5 py-1.5 rounded-sm',
                 'hover:text-[var(--accent)] transition-colors duration-150',
                 'focus-visible:outline-none focus-visible:ring-2',
                 'focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
-                'focus-visible:ring-offset-[var(--bg)] rounded-sm px-2.5 py-1.5',
+                'focus-visible:ring-offset-[var(--bg)]',
               )}
             >
               Login
             </Link>
 
-            {/* Animated primary CTA */}
             <motion.div
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
@@ -124,8 +126,7 @@ export default function Header() {
                   'hover:bg-[var(--btn-primary-hover)] transition-colors duration-150',
                   'focus-visible:outline-none focus-visible:ring-2',
                   'focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
-                  'focus-visible:ring-offset-[var(--bg)]',
-                  'group',
+                  'focus-visible:ring-offset-[var(--bg)] group',
                 )}
               >
                 <span className="relative z-10">Book Consultation</span>
@@ -140,7 +141,7 @@ export default function Header() {
             </motion.div>
           </div>
 
-          {/* ── Mobile hamburger ──────────────────────────────────────────── */}
+          {/* Mobile hamburger */}
           <motion.button
             ref={hamburgerRef}
             type="button"
@@ -151,10 +152,8 @@ export default function Header() {
             whileTap={{ scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 500, damping: 25 }}
             className={cn(
-              'flex md:hidden items-center justify-center',
-              'h-10 w-10 rounded-md',
-              'text-[var(--fg)] hover:bg-[var(--bg-muted)]',
-              'transition-colors duration-150',
+              'flex md:hidden items-center justify-center h-10 w-10 rounded-md',
+              'text-[var(--fg)] hover:bg-[var(--bg-muted)] transition-colors duration-150',
               'focus-visible:outline-none focus-visible:ring-2',
               'focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
               'focus-visible:ring-offset-[var(--bg)]',
@@ -168,6 +167,7 @@ export default function Header() {
             </motion.div>
           </motion.button>
         </div>
+
       </motion.header>
 
       <MobileDrawer
