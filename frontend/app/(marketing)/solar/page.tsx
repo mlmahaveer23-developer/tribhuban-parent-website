@@ -170,35 +170,88 @@ export default function SolarPage() {
       <main id="main-content">
 
         {/* ── HERO ─────────────────────────────────────────────────────────── */}
-        <section aria-label="Solar hero" className="relative bg-[var(--bg)] pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
-          <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-            <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-[0.06]" style={{ background: 'radial-gradient(circle, #B45309 0%, transparent 70%)', transform: 'translate(30%, -30%)' }} />
-            <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full opacity-[0.04]" style={{ background: 'radial-gradient(circle, #C9A227 0%, transparent 70%)', transform: 'translate(-30%, 30%)' }} />
-          </div>
-          <div className="container-content relative z-10">
+        {/*
+          Background: autoplay muted looping mp4 video with WebP poster fallback.
+          - object-fit: cover keeps video centered on all screen sizes
+          - Dark gradient overlay ensures text readability over any video content
+          - preload="none" defers network load until needed
+          - playsInline enables inline playback on iOS (no fullscreen hijack)
+          - All existing content, animations, and z-indexes are preserved
+        */}
+        <section
+          aria-label="Solar hero"
+          className="relative min-h-[60vh] md:min-h-[72vh] pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden bg-[#0e1a0e]"
+        >
+          {/* ── Video background ────────────────────────────────────────── */}
+          <video
+            aria-hidden="true"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="none"
+            poster="/rooftop-solar-poster.webp"
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            style={{ zIndex: 0 }}
+          >
+            <source src="/rooftop-solar-bg.mp4" type="video/mp4" />
+            {/* Poster image serves as fallback when video cannot play */}
+          </video>
+
+          {/* ── Gradient overlay — text readability ──────────────────────── */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0"
+            style={{
+              zIndex: 1,
+              background:
+                'linear-gradient(to right, rgba(10,20,10,0.82) 0%, rgba(10,20,10,0.65) 55%, rgba(10,20,10,0.35) 100%)',
+            }}
+          />
+
+          {/* ── Subtle vignette at bottom for section blending ───────────── */}
+          <div
+            aria-hidden="true"
+            className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
+            style={{
+              zIndex: 2,
+              background: 'linear-gradient(to bottom, transparent, rgba(10,20,10,0.4))',
+            }}
+          />
+
+          {/* ── Page content — sits above video and overlays ─────────────── */}
+          <div className="container-content relative" style={{ zIndex: 3 }}>
             <nav aria-label="Breadcrumb" className="mb-8">
-              <ol className="flex flex-wrap items-center gap-1 text-sm text-[var(--fg-subtle)]" role="list">
-                <li><Link href="/" className="hover:text-[var(--accent)] transition-colors">Home</Link></li>
-                <li><span aria-hidden="true" className="mx-1 text-[var(--fg-subtle)]">/</span><span aria-current="page" className="font-medium text-[var(--fg-muted)]">Solar</span></li>
+              <ol className="flex flex-wrap items-center gap-1 text-sm text-white/60" role="list">
+                <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
+                <li><span aria-hidden="true" className="mx-1 text-white/40">/</span><span aria-current="page" className="font-medium text-white/80">Solar</span></li>
               </ol>
             </nav>
             <ScrollReveal variant="fadeUp">
               <div className="max-w-3xl">
-                <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[var(--accent)] mb-4">
+                <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#C9A227' }}>
                   <span>☀️</span> Rooftop Solar Solutions
                 </span>
-                <h1 className="font-display text-5xl sm:text-6xl font-semibold text-[var(--fg)] mb-6 leading-tight">
-                  Power Your Future with <span style={{ background: 'linear-gradient(135deg, #B45309, #C9A227)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Rooftop Solar</span>
+                <h1 className="font-display text-5xl sm:text-6xl font-semibold text-white mb-6 leading-tight drop-shadow-sm">
+                  Power Your Future with{' '}
+                  <span style={{ background: 'linear-gradient(135deg, #f5a623, #C9A227)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                    Rooftop Solar
+                  </span>
                 </h1>
-                <p className="text-xl text-[var(--fg-muted)] mb-4 leading-relaxed max-w-2xl">
+                <p className="text-xl text-white/80 mb-4 leading-relaxed max-w-2xl drop-shadow-sm">
                   India&apos;s most favourable solar subsidy window is open right now. In Odisha, a 3 kW residential system has a net investment of just ₹42,000–₹57,000 — with a payback period under 3 years and 25 years of near-free power ahead.
                 </p>
-                <p className="text-base text-[var(--fg-subtle)] mb-10 max-w-2xl">
+                <p className="text-base text-white/60 mb-10 max-w-2xl">
                   Tribhuban Concepts engineers design, procure ALMM List-II compliant equipment, and commission every system — handling all DISCOM paperwork, ELBO compliance, and subsidy processing.
                 </p>
                 <div className="flex flex-col sm:flex-row items-start gap-4">
                   <Link href="/consultation" className={primaryBtn}>Book Free Consultation</Link>
-                  <Link href="/solar/calculator" className={ghostBtn}>Calculate My Savings</Link>
+                  <Link
+                    href="/solar/calculator"
+                    className="inline-flex items-center justify-center h-12 px-8 rounded-md text-base font-semibold border border-white/40 bg-white/10 text-white hover:bg-white/20 hover:border-white/60 backdrop-blur-sm transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                  >
+                    Calculate My Savings
+                  </Link>
                 </div>
               </div>
             </ScrollReveal>
