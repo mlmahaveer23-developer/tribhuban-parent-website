@@ -3,6 +3,7 @@ import Link from 'next/link';
 import ScrollReveal from '@/components/motion/ScrollReveal';
 import StaggerGroup from '@/components/motion/StaggerGroup';
 import SolarCalculatorPreview from '@/components/solar/SolarCalculatorPreview';
+import SolarHeroVideo from '@/components/solar/SolarHeroVideo';
 
 export const revalidate = 21600;
 
@@ -183,20 +184,7 @@ export default function SolarPage() {
           className="relative min-h-[60vh] md:min-h-[72vh] pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden bg-[#0e1a0e]"
         >
           {/* ── Video background ────────────────────────────────────────── */}
-          <video
-            aria-hidden="true"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="none"
-            poster="/rooftop-solar-poster.webp"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-            style={{ zIndex: 0 }}
-          >
-            <source src="/rooftop-solar-bg.mp4" type="video/mp4" />
-            {/* Poster image serves as fallback when video cannot play */}
-          </video>
+          <SolarHeroVideo />
 
           {/* ── Gradient overlay — text readability ──────────────────────── */}
           <div
