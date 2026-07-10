@@ -4,6 +4,7 @@ import ScrollReveal from '@/components/motion/ScrollReveal';
 import StaggerGroup from '@/components/motion/StaggerGroup';
 import SolarCalculatorPreview from '@/components/solar/SolarCalculatorPreview';
 import SolarHeroVideo from '@/components/solar/SolarHeroVideo';
+import { SITE_URL } from '@/lib/siteConfig';
 
 export const revalidate = 21600;
 
@@ -13,9 +14,9 @@ const serviceJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
   name: 'Rooftop Solar Energy Solutions',
-  provider: { '@type': 'Organization', name: 'Tribhuban Concepts', url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}' },
+  provider: { '@type': 'Organization', name: 'Tribhuban Concepts', url: SITE_URL },
   description: 'Precision-engineered rooftop solar systems for residential and commercial properties across India.',
-  url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses/rooftop-solar',
+  url: `${SITE_URL}/businesses/rooftop-solar`,
   areaServed: { '@type': 'Country', name: 'India' },
   serviceType: 'Solar Energy Installation',
 };
@@ -24,9 +25,9 @@ const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/' },
-    { '@type': 'ListItem', position: 2, name: 'Businesses', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses' },
-    { '@type': 'ListItem', position: 3, name: 'Rooftop Solar', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses/rooftop-solar' },
+    { '@type': 'ListItem', position: 1, name: 'Home',         item: `${SITE_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Businesses',   item: `${SITE_URL}/businesses` },
+    { '@type': 'ListItem', position: 3, name: 'Rooftop Solar',item: `${SITE_URL}/businesses/rooftop-solar` },
   ],
 };
 
@@ -46,9 +47,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Rooftop Solar Energy Solutions — Tribhuban Concepts',
     description: 'Complete guide to rooftop solar in Odisha & India. PM Surya Ghar subsidies, OASBY top-up, ROI calculator, and free consultation from certified EPC engineers.',
-    alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses/rooftop-solar' },
+    alternates: { canonical: `${SITE_URL}/businesses/rooftop-solar` },
     openGraph: {
-      type: 'website', url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses/rooftop-solar',
+      type: 'website', url: `${SITE_URL}/businesses/rooftop-solar`,
       title: 'Rooftop Solar Energy Solutions — Tribhuban Concepts',
       description: 'Precision-engineered rooftop solar systems. Central + State subsidies up to ₹1.38 Lakh. Payback in under 3 years.',
       siteName: 'Tribhuban Concepts',

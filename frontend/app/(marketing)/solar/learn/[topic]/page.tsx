@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { buildLearningResourceJsonLd, buildBreadcrumbJsonLd } from './jsonld';
+import { SITE_URL } from '@/lib/siteConfig';
 
 // ── SSG + ISR — revalidate every 1 hour (Req 3.1, 4.3) ───────────────────────
 export const revalidate = 3600;
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${title} — Solar Learning Hub — Tribhuban Concepts`,
     description: `Learn about ${title.toLowerCase()} in solar energy. Practical, engineer-written guide for homeowners and businesses.`,
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn/${topic}`,
+      canonical: `${SITE_URL}/solar/learn/${topic}`,
     },
     openGraph: {
       type: 'article',

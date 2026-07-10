@@ -10,6 +10,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Search, Mail, Phone, MessageCircle } from 'lucide-react';
+import { SITE_URL } from '@/lib/siteConfig';
 
 // ── ISR ───────────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   title: 'Support — Tribhuban Concepts',
   description:
     'Get help with Tribhuban Concepts solar systems, products, billing, and more. Browse categories, popular articles, or contact our team.',
-  alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/support' },
+  alternates: { canonical: `${SITE_URL}/support` },
   openGraph: {
     title: 'Support — Tribhuban Concepts',
     description:

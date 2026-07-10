@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Clock, Calendar } from 'lucide-react';
 import { solarBlogPosts, type BlogPost } from '@/lib/content/solar-blogs';
+import { SITE_URL } from '@/lib/siteConfig';
 
 interface Props { params: Promise<{ slug: string }>; }
 
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} — Tribhuban Concepts`,
     description: post.excerpt,
-    alternates: { canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/blog/${post.slug}` },
+    alternates: { canonical: `${SITE_URL}/resources/blogs/${post.slug}` },
     openGraph: { type: 'article', title: post.title, description: post.excerpt, siteName: 'Tribhuban Concepts' },
   };
 }
@@ -37,7 +38,7 @@ export default async function BlogArticlePage({ params }: Props) {
     author: { '@type': 'Organization', name: 'Tribhuban Concepts' },
     publisher: { '@type': 'Organization', name: 'Tribhuban Concepts' },
     datePublished: post.date,
-    url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/blog/${post.slug}`,
+    url: `${SITE_URL}/resources/blogs/${post.slug}`,
   };
 
   return (

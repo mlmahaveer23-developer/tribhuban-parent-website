@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { SITE_URL } from '@/lib/siteConfig';
 
 // ── SSG + ISR — revalidate every 6 hours (Req 3.1, 15.3) ─────────────────────
 export const revalidate = 21600;
@@ -11,10 +12,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Future Technologies — Tribhuban Concepts',
     description:
       'Discover Tribhuban Concepts\'s R&D vision — AI & Energy, Advanced Materials, Grid Intelligence, and Sustainable Infrastructure. Engineering the future today.',
-    alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/future-technologies' },
+    alternates: { canonical: `${SITE_URL}/future-technologies` },
     openGraph: {
       type: 'website',
-      url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/future-technologies',
+      url: `${SITE_URL}/future-technologies`,
       title: 'Future Technologies — Tribhuban Concepts',
       description:
         'AI & Energy, Advanced Materials, Grid Intelligence, and Sustainable Infrastructure — our R&D vision.',

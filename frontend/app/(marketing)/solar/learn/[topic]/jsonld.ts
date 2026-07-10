@@ -2,6 +2,7 @@
  * JSON-LD helper functions for the Solar Learning Hub topic page.
  * Extracted into a separate file to avoid Next.js page-export type-checking issues.
  */
+import { SITE_URL } from '@/lib/siteConfig';
 
 /** Build LearningResource JSON-LD for a topic. (Req 23.2) */
 export function buildLearningResourceJsonLd(topic: string, title: string) {
@@ -9,7 +10,7 @@ export function buildLearningResourceJsonLd(topic: string, title: string) {
     '@context': 'https://schema.org',
     '@type': 'LearningResource',
     name: title,
-    url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn/${topic}`,
+    url: `${SITE_URL}/solar/learn/${topic}`,
     provider: {
       '@type': 'Organization',
       name: 'Tribhuban Concepts',

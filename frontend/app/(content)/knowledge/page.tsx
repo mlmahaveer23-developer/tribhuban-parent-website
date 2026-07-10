@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { solarBlogPosts } from '@/lib/content/solar-blogs';
+import { SITE_URL } from '@/lib/siteConfig';
 
 export const metadata: Metadata = {
   title: 'Knowledge Centre — Guides, Documentation & Resources',
   description: 'Step-by-step solar guides, technical documentation, datasheets, FAQs and downloadable resources from Tribhuban Concepts.',
-  alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/knowledge' },
+  alternates: { canonical: `${SITE_URL}/knowledge` },
 };
 
 export const revalidate = 3600;

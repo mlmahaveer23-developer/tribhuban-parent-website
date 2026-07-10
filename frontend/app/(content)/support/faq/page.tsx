@@ -10,7 +10,7 @@
 
 import type { Metadata } from 'next';
 import Link from 'next/link';
-
+import { SITE_URL } from '@/lib/siteConfig';
 import FAQAccordion, { type FAQCategory } from '@/components/content/FAQAccordion';
 
 // ── ISR ───────────────────────────────────────────────────────────────────────
@@ -113,7 +113,7 @@ export const metadata: Metadata = {
   title: 'FAQ — Tribhuban Concepts',
   description:
     'Frequently asked questions about Tribhuban Concepts solar systems, pricing, financing, and technical support.',
-  alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/support/faq' },
+  alternates: { canonical: `${SITE_URL}/support/faq` },
   openGraph: {
     title: 'FAQ — Tribhuban Concepts',
     description:

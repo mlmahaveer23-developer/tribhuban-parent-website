@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { SITE_URL } from '@/lib/siteConfig';
 
 // ── SSG + ISR — revalidate every 1 hour (Req 3.1, 4.2) ───────────────────────
 export const revalidate = 3600;
@@ -11,10 +12,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Solar Learning Hub — Tribhuban Concepts',
     description:
       'In-depth articles on solar energy — Basics, Economics, Technology, and Maintenance. Written by engineers for homeowners and businesses.',
-    alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn' },
+    alternates: { canonical: `${SITE_URL}/solar/learn` },
     openGraph: {
       type: 'website',
-      url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn',
+      url: `${SITE_URL}/solar/learn`,
       title: 'Solar Learning Hub — Tribhuban Concepts',
       description:
         'In-depth articles on solar energy — Basics, Economics, Technology, and Maintenance.',

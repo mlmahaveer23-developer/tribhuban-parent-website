@@ -3,11 +3,12 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { OdishaSolarCalculator } from '@/components/solar/OdishaSolarCalculator';
+import { SITE_URL } from '@/lib/siteConfig';
 
 export const metadata: Metadata = {
   title: 'Solar ROI Calculator — Odisha Subsidies, Payback & Savings',
   description: 'Engineering-grade solar ROI calculator for Odisha. PM Surya Ghar + OASBY subsidies, OERC telescopic tariffs, payback period, 25-year savings, CO₂ offset.',
-  alternates: { canonical: '/businesses/rooftop-solar/solar-calculator' },
+  alternates: { canonical: `${SITE_URL}/businesses/rooftop-solar/solar-calculator` },
   robots: { index: true, follow: true },
 };
 
@@ -16,7 +17,7 @@ const jsonLd = {
   '@type': 'WebApplication',
   name: 'Odisha Solar ROI Calculator',
   description: 'Calculate rooftop solar ROI with PM Surya Ghar + OASBY subsidies and OERC 2026–27 tariffs.',
-  url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses/rooftop-solar/solar-calculator',
+  url: `${SITE_URL}/businesses/rooftop-solar/solar-calculator`,
   applicationCategory: 'FinanceApplication',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
 };
@@ -25,9 +26,12 @@ const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/' },
-    { '@type': 'ListItem', position: 2, name: 'Solar', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar' },
-    { '@type': 'ListItem', position: 3, name: 'Calculator', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/calculator' },
+    { '@type': 'ListItem', position: 1, name: 'Home',         item: `${SITE_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Businesses',   item: `${SITE_URL}/businesses` },
+    { '@type': 'ListItem', position: 3, name: 'Rooftop Solar',item: `${SITE_URL}/businesses/rooftop-solar` },
+    { '@type': 'ListItem', position: 4, name: 'Calculator',   item: `${SITE_URL}/businesses/rooftop-solar/solar-calculator` },
+  ],
+};
   ],
 };
 

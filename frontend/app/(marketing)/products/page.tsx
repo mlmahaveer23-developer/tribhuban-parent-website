@@ -1,25 +1,21 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { SITE_URL } from '@/lib/siteConfig';
 
 // ── SSG + ISR — revalidate every 6 hours (Req 3.1, 15.1) ─────────────────────
 export const revalidate = 21600;
 
 // ── Metadata ──────────────────────────────────────────────────────────────────
 
-/**
- * Req 15.2: Individual future product pages are noindex until launched.
- * The Products page itself is indexable (it's the catalogue).
- * Individual product detail pages (when they exist) should carry noindex.
- */
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Future Products — Tribhuban Concepts',
     description:
       'Explore the technology products Tribhuban Concepts is building — Solar OS, EnergyBot, and GridLink. Register your interest and stay ahead.',
-    alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/products' },
+    alternates: { canonical: `${SITE_URL}/products` },
     openGraph: {
       type: 'website',
-      url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/products',
+      url: `${SITE_URL}/products`,
       title: 'Future Products — Tribhuban Concepts',
       description:
         'Solar OS, EnergyBot, and GridLink — the technology products Tribhuban Concepts is building.',
