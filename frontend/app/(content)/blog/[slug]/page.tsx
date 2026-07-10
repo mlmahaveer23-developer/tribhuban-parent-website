@@ -49,7 +49,7 @@ export default async function BlogArticlePage({ params }: Props) {
           {/* Hero */}
           <header className="bg-[var(--bg-subtle)] border-b border-[var(--border)] py-12 md:py-16">
             <div className="container-content max-w-3xl">
-              <Link href="/blog" className="inline-flex items-center gap-1.5 text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors mb-6">
+              <Link href="/resources/blogs" className="inline-flex items-center gap-1.5 text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors mb-6">
                 <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Back to Blog
               </Link>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -79,7 +79,7 @@ export default async function BlogArticlePage({ params }: Props) {
                   <h2 className="font-display text-2xl font-semibold text-[var(--fg)] mb-3">Ready to calculate your savings?</h2>
                   <p className="text-[var(--fg-muted)] mb-5">Use our Odisha-specific ROI calculator to get an instant estimate with real OERC tariff data and PM Surya Ghar subsidies.</p>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <Link href="/solar/calculator" className="inline-flex items-center justify-center h-11 px-6 rounded-lg text-sm font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)] hover:bg-[var(--btn-primary-hover)] transition-colors">Try Solar Calculator</Link>
+                    <Link href="/businesses/rooftop-solar/solar-calculator" className="inline-flex items-center justify-center h-11 px-6 rounded-lg text-sm font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)] hover:bg-[var(--btn-primary-hover)] transition-colors">Try Solar Calculator</Link>
                     <Link href="/consultation" className="inline-flex items-center justify-center h-11 px-6 rounded-lg text-sm font-semibold border border-[var(--border)] text-[var(--fg)] hover:bg-[var(--bg-muted)] transition-colors">Book Free Consultation</Link>
                   </div>
                 </div>
@@ -93,7 +93,7 @@ export default async function BlogArticlePage({ params }: Props) {
                     <h3 className="font-display text-sm font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-4">Related Articles</h3>
                     <div className="space-y-3">
                       {solarBlogPosts.filter(p => p.slug !== post.slug).map(related => (
-                        <Link key={related.slug} href={`/blog/${related.slug}`} className="block text-sm font-medium text-[var(--fg)] hover:text-[var(--accent)] transition-colors leading-snug">{related.title}</Link>
+                        <Link key={related.slug} href={`/resources/blogs/${related.slug}`} className="block text-sm font-medium text-[var(--fg)] hover:text-[var(--accent)] transition-colors leading-snug">{related.title}</Link>
                       ))}
                     </div>
                   </div>

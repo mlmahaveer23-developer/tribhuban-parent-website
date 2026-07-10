@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 const guides = [
-  { icon: '☀️', title: 'Complete Rooftop Solar Guide (Odisha 2026)', desc: 'Subsidies, ALMM compliance, ELBO regulations, net metering, and the full application process.', href: '/blog/complete-guide-rooftop-solar-odisha-2026', tag: 'Solar' },
-  { icon: '🏛️', title: 'PM Surya Ghar & OASBY Subsidy Guide', desc: 'Detailed eligibility criteria, exact subsidy slabs, application walkthrough and KYC requirements.', href: '/blog/pm-surya-ghar-oasby-subsidy-guide', tag: 'Subsidies' },
-  { icon: '💰', title: 'Solar ROI Calculator Guide', desc: 'How to interpret your ROI estimate, understand payback period, and model 25-year savings.', href: '/blog/rooftop-solar-roi-costs-savings-payback', tag: 'Finance' },
-  { icon: '🔋', title: 'BESS & Hybrid Inverters: OERC 2026 Mandate', desc: 'When BESS is required, minimum capacities, cost impact, and how to size for peak-hour resilience.', href: '/blog/complete-guide-rooftop-solar-odisha-2026', tag: 'Technology' },
-  { icon: '⚡', title: 'Net Metering in Odisha Explained', desc: 'DISCOM settlement, APPC rates, Group and Virtual Net Metering, and the annual year-end settlement.', href: '/blog/complete-guide-rooftop-solar-odisha-2026', tag: 'Regulations' },
-  { icon: '🧮', title: 'How to Use the Solar ROI Calculator', desc: 'Step-by-step walkthrough of all inputs — customer category, bill, area, DISCOM, BESS and tariff.', href: '/solar/calculator', tag: 'Tools' },
+  { icon: '☀️', title: 'Complete Rooftop Solar Guide (Odisha 2026)', desc: 'Subsidies, ALMM compliance, ELBO regulations, net metering, and the full application process.', href: '/resources/blogs/complete-guide-rooftop-solar-odisha-2026', tag: 'Solar' },
+  { icon: '🏛️', title: 'PM Surya Ghar & OASBY Subsidy Guide', desc: 'Detailed eligibility criteria, exact subsidy slabs, application walkthrough and KYC requirements.', href: '/resources/blogs/pm-surya-ghar-oasby-subsidy-guide', tag: 'Subsidies' },
+  { icon: '💰', title: 'Solar ROI Calculator Guide', desc: 'How to interpret your ROI estimate, understand payback period, and model 25-year savings.', href: '/resources/blogs/rooftop-solar-roi-costs-savings-payback', tag: 'Finance' },
+  { icon: '🔋', title: 'BESS & Hybrid Inverters: OERC 2026 Mandate', desc: 'When BESS is required, minimum capacities, cost impact, and how to size for peak-hour resilience.', href: '/resources/blogs/complete-guide-rooftop-solar-odisha-2026', tag: 'Technology' },
+  { icon: '⚡', title: 'Net Metering in Odisha Explained',            desc: 'DISCOM settlement, APPC rates, Group and Virtual Net Metering, and the annual year-end settlement.',               href: '/resources/blogs/complete-guide-rooftop-solar-odisha-2026', tag: 'Regulations' },
+  { icon: '🧮', title: 'How to Use the Solar ROI Calculator',         desc: 'Step-by-step walkthrough of all inputs — customer category, bill, area, DISCOM, BESS and tariff.',                 href: '/businesses/rooftop-solar/solar-calculator',                 tag: 'Tools' },
 ];
 
 const docs = [
@@ -180,7 +180,7 @@ export default function KnowledgePage() {
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 list-none p-0 m-0" role="list">
           {solarBlogPosts.map(post => (
             <li key={post.slug}>
-              <Link href={`/blog/${post.slug}`} className="group block rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] p-5 h-full flex flex-col gap-2 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 transition-all duration-200">
+              <Link href={`/resources/blogs/${post.slug}`} className="group block rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] p-5 h-full flex flex-col gap-2 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 transition-all duration-200">
                 <div className="flex flex-wrap gap-1.5">
                   {post.tags.slice(0, 2).map(tag => <span key={tag} className="text-[10px] font-semibold text-[var(--accent)] uppercase tracking-wider">{tag}</span>)}
                 </div>
@@ -199,7 +199,7 @@ export default function KnowledgePage() {
           <h2 className="font-display text-2xl font-semibold text-[var(--fg)] mb-3">Ready to go solar?</h2>
           <p className="text-[var(--fg-muted)] mb-6">Use our calculator for an instant estimate, or book a free consultation with our engineers.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/solar/calculator" className="inline-flex items-center justify-center h-11 px-6 rounded-lg text-sm font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)] hover:bg-[var(--btn-primary-hover)] transition-colors">Try Solar Calculator</Link>
+            <Link href="/businesses/rooftop-solar/solar-calculator" className="inline-flex items-center justify-center h-11 px-6 rounded-lg text-sm font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)] hover:bg-[var(--btn-primary-hover)] transition-colors">Try Solar Calculator</Link>
             <Link href="/consultation" className="inline-flex items-center justify-center h-11 px-6 rounded-lg text-sm font-semibold border border-[var(--border)] text-[var(--fg)] hover:bg-[var(--bg-muted)] transition-colors">Book Free Consultation</Link>
           </div>
         </div>

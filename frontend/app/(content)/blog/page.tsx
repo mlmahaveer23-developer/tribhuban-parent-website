@@ -53,7 +53,7 @@ export default function BlogPage() {
       {solarBlogPosts[0] && (
         <section className="container-content py-12 md:py-16" aria-labelledby="featured-heading">
           <h2 id="featured-heading" className="text-xs font-semibold uppercase tracking-widest text-[var(--accent)] mb-6">Featured Article</h2>
-          <Link href={`/blog/${solarBlogPosts[0].slug}`} className="group block rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)] overflow-hidden hover:shadow-[var(--shadow-lg)] hover:-translate-y-1 transition-all duration-300">
+          <Link href={`/resources/blogs/${solarBlogPosts[0].slug}`} className="group block rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)] overflow-hidden hover:shadow-[var(--shadow-lg)] hover:-translate-y-1 transition-all duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               <div className="h-56 md:h-auto flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(180,83,9,0.12), rgba(201,162,39,0.1))' }}>
                 <span className="text-6xl" aria-hidden="true">☀️</span>
@@ -89,7 +89,7 @@ export default function BlogPage() {
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0 m-0" role="list">
             {solarBlogPosts.map(post => (
               <li key={post.slug}>
-                <Link href={`/blog/${post.slug}`} className="group block rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] overflow-hidden hover:shadow-[var(--shadow-md)] hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
+                <Link href={`/resources/blogs/${post.slug}`} className="group block rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] overflow-hidden hover:shadow-[var(--shadow-md)] hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
                   <div className="h-40 flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, rgba(180,83,9,0.07), rgba(201,162,39,0.07))' }}>
                     <span className="text-4xl" aria-hidden="true">📖</span>
                   </div>

@@ -389,7 +389,7 @@ export function OdishaSolarCalculator() {
                 <Link href="/consultation" className="flex-1 inline-flex items-center justify-center h-11 rounded-lg text-sm font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)] hover:bg-[var(--btn-primary-hover)] transition-colors">
                   Book Free Consultation
                 </Link>
-                <Link href="/blog/rooftop-solar-roi-costs-savings-payback" className="flex-1 inline-flex items-center justify-center h-11 rounded-lg text-sm font-semibold border border-[var(--border)] text-[var(--fg)] hover:bg-[var(--bg-muted)] transition-colors">
+                <Link href="/resources/blogs/rooftop-solar-roi-costs-savings-payback" className="flex-1 inline-flex items-center justify-center h-11 rounded-lg text-sm font-semibold border border-[var(--border)] text-[var(--fg)] hover:bg-[var(--bg-muted)] transition-colors">
                   Read ROI Guide
                 </Link>
               </div>
