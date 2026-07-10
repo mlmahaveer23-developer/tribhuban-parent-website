@@ -6,6 +6,7 @@ import SolarCalculatorPreview from '@/components/solar/SolarCalculatorPreview';
 import SolarHeroVideo from '@/components/solar/SolarHeroVideo';
 import { SITE_URL } from '@/lib/siteConfig';
 
+// ISR: revalidate every 6 hours — bumped to force cache bust after video bg update
 export const revalidate = 21600;
 
 // ── JSON-LD ───────────────────────────────────────────────────────────────────
