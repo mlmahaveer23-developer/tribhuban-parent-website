@@ -32,8 +32,6 @@ const breadcrumbJsonLd = {
     { '@type': 'ListItem', position: 4, name: 'Calculator',   item: `${SITE_URL}/businesses/rooftop-solar/solar-calculator` },
   ],
 };
-  ],
-};
 
 export default function SolarCalculatorPage() {
   return (
