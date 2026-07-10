@@ -99,7 +99,7 @@ const placeholderArticles = [
     title: 'How Rooftop Solar Cuts Your Electricity Bill from Day One',
     excerpt:
       'A practical walkthrough of how grid-tied solar works, what a typical payback period looks like, and what to ask your installer.',
-    href: '/blog',
+    href: '/resources/blogs',
   },
   {
     id: 2,
@@ -107,7 +107,7 @@ const placeholderArticles = [
     title: "AI in Energy Management: What's Possible Today",
     excerpt:
       "Machine learning is already optimising energy dispatch in commercial buildings. Here's how small businesses can benefit now.",
-    href: '/blog',
+    href: '/resources/blogs',
   },
   {
     id: 3,
@@ -115,7 +115,7 @@ const placeholderArticles = [
     title: 'The Carbon Math Behind 500 Solar Installations',
     excerpt:
       'Aggregated data from our project portfolio shows that a single 5 kW residential system offsets around 4 tonnes of CO₂ per year.',
-    href: '/blog',
+    href: '/resources/blogs',
   },
 ] as const;
 
@@ -174,7 +174,7 @@ export default function HomePage() {
                 numbers before you commit.
               </p>
               <Link
-                href="/solar"
+                href="/businesses/rooftop-solar"
                 className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
               >
                 Explore Solar →
@@ -279,7 +279,7 @@ export default function HomePage() {
                   Latest Insights
                 </h2>
                 <Link
-                  href="/blog"
+                  href="/resources/blogs"
                   className="text-sm font-semibold text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
                 >
                   View all →

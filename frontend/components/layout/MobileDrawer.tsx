@@ -3,12 +3,11 @@
 /**
  * MobileDrawer — full-screen slide-out navigation for mobile.
  *
- * Structure mirrors the desktop mega menu:
- *   Businesses | Products | Resources | Partners | About | Contact
+ * Completely data-driven from siteConfig.ts.
+ * Adding a new business, product, or resource only requires editing that file.
  *
- * Each top-level item with sub-links is collapsible (accordion pattern).
+ * Structure: Businesses | Products | Resources | Partners | About | Contact
  * Bottom row: Login + Book Consultation CTAs.
- * Touch-friendly: min 44px hit targets, comfortable padding.
  */
 
 import * as Dialog from '@radix-ui/react-dialog';
@@ -17,65 +16,61 @@ import { X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { cn } from '@/lib/utils/cn';
+import {
+  BUSINESSES,
+  RESOURCES,
+  PARTNERS,
+  ABOUT_LINKS,
+  businessHref,
+  productHref,
+  resourceHref,
+} from '@/lib/siteConfig';
 
-// ── Nav data (mirrors MegaMenu) ───────────────────────────────────────────────
+// ── Build nav sections from config ───────────────────────────────────────────
 
-const navSections = [
+type NavItem = { href: string; label: string; desc: string };
+
+const navSections: { id: string; label: string; items: NavItem[] }[] = [
   {
     id: 'businesses',
     label: 'Businesses',
-    items: [
-      { href: '/solar',                           label: 'Rooftop Solar',                    desc: 'Solar installation services.' },
-      { href: '/businesses/fmcg-distribution',  label: 'FMCG Online Distribution',          desc: 'Digital FMCG supply chain.' },
-      { href: '/businesses/hrds',               label: 'HRDS',                              desc: 'Home to Homeless solutions.' },
-      { href: '/businesses/pink-moon-vision',   label: 'Pink Moon Vision',                  desc: 'Creative tech & media.' },
-      { href: '/businesses/entrepreneur-funding', label: 'Entrepreneur Funding Facilitation', desc: 'Funding for early-stage ventures.' },
-    ],
+    items: BUSINESSES.map((b) => ({
+      href: businessHref(b.slug),
+      label: b.title,
+      desc: b.description,
+    })),
   },
   {
     id: 'products',
     label: 'Products',
-    items: [
-      { href: '/solar/calculator',               label: 'Solar Calculator',    desc: 'Subsidy, savings & ROI calculators.' },
-      { href: '/products/unit-converter',        label: 'Unit Converter',      desc: '' },
-      { href: '/products/productivity-tools',    label: 'Productivity Tools',  desc: '' },
-      { href: '/products/ai-assistants',         label: 'AI Assistants',       desc: '' },
-      { href: '/products/future-apps',           label: 'Future Apps',         desc: '' },
-      { href: '/products/web-applications',      label: 'Web Applications',    desc: '' },
-      { href: '/products/mobile-applications',   label: 'Mobile Applications', desc: '' },
-    ],
+    items: BUSINESSES.flatMap((b) =>
+      b.products.map((p) => ({
+        href: productHref(b.slug, p.slug),
+        label: `${p.title}`,
+        desc: p.description ?? '',
+      }))
+    ),
   },
   {
     id: 'resources',
     label: 'Resources',
-    items: [
-      { href: '/blog',               label: 'Blog',          desc: 'Insights on solar, tech & sustainability.' },
-      { href: '/knowledge/guides',   label: 'Guides',        desc: 'Step-by-step guides for every journey.' },
-      { href: '/knowledge/docs',     label: 'Documentation', desc: 'Technical docs and references.' },
-      { href: '/support/faq',        label: 'FAQs',          desc: 'Answers to common questions.' },
-      { href: '/knowledge/downloads', label: 'Downloads',    desc: 'Brochures, datasheets and resources.' },
-    ],
+    items: RESOURCES.map((r) => ({
+      href: resourceHref(r.slug),
+      label: r.title,
+      desc: r.description,
+    })),
   },
   {
     id: 'partners',
     label: 'Partners',
-    items: [
-      { href: '/partners/become',    label: 'Become a Partner',       desc: '' },
-      { href: '/partners/franchise', label: 'Franchise Opportunities', desc: '' },
-      { href: '/partners/csr',       label: 'CSR & NGO Collaboration', desc: '' },
-    ],
+    items: PARTNERS.map((p) => ({ href: p.href, label: p.title, desc: p.description })),
   },
   {
     id: 'about',
     label: 'About',
-    items: [
-      { href: '/about',           label: 'Our Story',       desc: '' },
-      { href: '/about#vision',    label: 'Vision & Mission', desc: '' },
-      { href: '/about#leadership', label: 'Leadership',      desc: '' },
-      { href: '/about#values',    label: 'Core Values',      desc: '' },
-    ],
+    items: ABOUT_LINKS.map((a) => ({ href: a.href, label: a.title, desc: '' })),
   },
-] as const;
+];
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -97,7 +92,7 @@ function AccordionSection({
 }: {
   id: string;
   label: string;
-  items: readonly { href: string; label: string; desc: string }[];
+  items: NavItem[];
   isOpen: boolean;
   onToggle: () => void;
   onClose: () => void;
@@ -157,13 +152,9 @@ function AccordionSection({
                       'min-h-[44px] flex flex-col justify-center',
                     )}
                   >
-                    <span className="font-semibold text-[var(--fg)] group-hover:text-[var(--accent)]">
-                      {item.label}
-                    </span>
+                    <span className="font-semibold text-[var(--fg)]">{item.label}</span>
                     {item.desc && (
-                      <span className="text-xs text-[var(--fg-subtle)] mt-0.5">
-                        {item.desc}
-                      </span>
+                      <span className="text-xs text-[var(--fg-subtle)] mt-0.5">{item.desc}</span>
                     )}
                   </Link>
                 </li>
@@ -211,8 +202,7 @@ export default function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) 
             'data-[state=open]:animate-in data-[state=open]:slide-in-from-right',
             'data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right',
             'duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
-            'focus:outline-none',
-            'overflow-hidden',
+            'focus:outline-none overflow-hidden',
           )}
         >
           {/* Header */}
@@ -223,8 +213,7 @@ export default function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) 
               className={cn(
                 'font-display font-semibold text-lg text-[var(--fg)]',
                 'hover:text-[var(--accent)] transition-colors duration-150',
-                'focus-visible:outline-none focus-visible:ring-2',
-                'focus-visible:ring-[var(--ring)] rounded-sm',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm',
               )}
             >
               Tribhuban Concepts
@@ -235,8 +224,7 @@ export default function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) 
                 'flex items-center justify-center h-10 w-10 rounded-md',
                 'text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--bg-muted)]',
                 'transition-colors duration-150',
-                'focus-visible:outline-none focus-visible:ring-2',
-                'focus-visible:ring-[var(--ring)]',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]',
               )}
             >
               <X className="h-5 w-5" aria-hidden="true" />
@@ -244,10 +232,7 @@ export default function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) 
           </div>
 
           {/* Scrollable nav list */}
-          <nav
-            aria-label="Mobile navigation"
-            className="flex-1 overflow-y-auto overscroll-contain"
-          >
+          <nav aria-label="Mobile navigation" className="flex-1 overflow-y-auto overscroll-contain">
             <ul className="list-none m-0 p-0">
               {navSections.map((section) => (
                 <AccordionSection
@@ -271,8 +256,7 @@ export default function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) 
                     'text-base font-semibold text-[var(--fg)]',
                     'hover:text-[var(--accent)] hover:bg-[var(--bg-subtle)]',
                     'transition-colors duration-150',
-                    'focus-visible:outline-none focus-visible:ring-2',
-                    'focus-visible:ring-[var(--ring)] focus-visible:ring-inset',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-inset',
                   )}
                 >
                   Contact
@@ -283,7 +267,6 @@ export default function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) 
 
           {/* Bottom CTAs */}
           <div className="shrink-0 px-5 py-5 border-t border-[var(--border)] space-y-3 bg-[var(--bg-subtle)]">
-            {/* Login */}
             <Link
               href="/login"
               onClick={close}
@@ -292,14 +275,11 @@ export default function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) 
                 'text-sm font-semibold text-[var(--fg)]',
                 'border border-[var(--border)] bg-[var(--btn-secondary-bg)]',
                 'hover:bg-[var(--btn-secondary-hover)] transition-colors duration-150',
-                'focus-visible:outline-none focus-visible:ring-2',
-                'focus-visible:ring-[var(--ring)]',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]',
               )}
             >
               Login
             </Link>
-
-            {/* Book Consultation */}
             <Link
               href="/consultation"
               onClick={close}
@@ -308,8 +288,7 @@ export default function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) 
                 'text-sm font-semibold',
                 'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)]',
                 'hover:bg-[var(--btn-primary-hover)] transition-colors duration-150',
-                'focus-visible:outline-none focus-visible:ring-2',
-                'focus-visible:ring-[var(--ring)]',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]',
               )}
             >
               Book Consultation

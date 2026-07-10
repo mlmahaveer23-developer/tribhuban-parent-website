@@ -198,42 +198,33 @@ export default function ConsultationPage() {
           {/* Column 2 — Solutions */}
           <div className="rounded-2xl border border-default bg-surface p-6 sm:p-8">
             <h3 className="mb-4 font-display text-lg font-semibold text-page uppercase tracking-wider">
-              Solutions
+              Businesses
             </h3>
             <ul className="space-y-3 list-none p-0 m-0">
               <li>
                 <Link
-                  href="/solar"
+                  href="/businesses/rooftop-solar"
                   className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
                 >
-                  Solar
+                  Rooftop Solar
                   <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/products"
+                  href="/businesses/rooftop-solar/solar-calculator"
                   className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
                 >
-                  Products
+                  Solar Calculator
                   <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/future-technologies"
+                  href="/businesses"
                   className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
                 >
-                  Future Tech
-                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/solar/calculator"
-                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
-                >
-                  Calculator
+                  All Businesses
                   <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
                 </Link>
               </li>
@@ -248,7 +239,7 @@ export default function ConsultationPage() {
             <ul className="space-y-3 list-none p-0 m-0">
               <li>
                 <Link
-                  href="/blog"
+                  href="/resources/blogs"
                   className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
                 >
                   Blog
@@ -257,28 +248,28 @@ export default function ConsultationPage() {
               </li>
               <li>
                 <Link
-                  href="/knowledge"
+                  href="/resources/guides"
                   className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
                 >
-                  Knowledge
+                  Guides
                   <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/support"
+                  href="/resources/faqs"
                   className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
                 >
-                  Support
+                  FAQs
                   <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/support/faq"
+                  href="/resources"
                   className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
                 >
-                  FAQ
+                  All Resources
                   <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
                 </Link>
               </li>

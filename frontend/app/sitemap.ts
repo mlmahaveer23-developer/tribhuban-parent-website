@@ -1,126 +1,60 @@
 import type { MetadataRoute } from 'next';
+import { BUSINESSES, RESOURCES, businessHref, productHref, resourceHref, SITE_URL } from '@/lib/siteConfig';
 
-// Static sitemap entries — dynamic content entries are added via revalidation.
-// Excludes: /search, /api/*, /app, /dashboard, /portal, /partner, /customer
+/**
+ * sitemap.ts — auto-generated from siteConfig.ts.
+ * Adding a new business, product, or resource category automatically
+ * includes it in the sitemap without editing this file.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://tribhubanconcepts.com';
   const now = new Date().toISOString();
 
   return [
-    // ── Core marketing ───────────────────────────────────────────────────────
-    {
-      url: `${baseUrl}/`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
+    // ── Core ─────────────────────────────────────────────────────────────────
+    { url: `${SITE_URL}/`,            lastModified: now, changeFrequency: 'daily',   priority: 1.0 },
+    { url: `${SITE_URL}/about`,       lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${SITE_URL}/contact`,     lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${SITE_URL}/consultation`,lastModified: now, changeFrequency: 'monthly', priority: 1.0 },
+    { url: `${SITE_URL}/careers`,     lastModified: now, changeFrequency: 'weekly',  priority: 0.7 },
 
-    // ── Solar ─────────────────────────────────────────────────────────────────
-    {
-      url: `${baseUrl}/solar`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/solar/calculator`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/solar/learn`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
+    // ── Businesses index ──────────────────────────────────────────────────────
+    { url: `${SITE_URL}/businesses`,  lastModified: now, changeFrequency: 'weekly',  priority: 0.9 },
 
-    // ── Products & future tech ────────────────────────────────────────────────
-    {
-      url: `${baseUrl}/products`,
+    // ── Individual business pages (generated from config) ─────────────────────
+    ...BUSINESSES.map((b) => ({
+      url: `${SITE_URL}${businessHref(b.slug)}`,
       lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/future-technologies`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    })),
 
-    // ── Content ───────────────────────────────────────────────────────────────
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/knowledge`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
+    // ── Product pages nested under their business ─────────────────────────────
+    ...BUSINESSES.flatMap((b) =>
+      b.products.map((p) => ({
+        url: `${SITE_URL}${productHref(b.slug, p.slug)}`,
+        lastModified: now,
+        changeFrequency: 'monthly' as const,
+        priority: 0.8,
+      }))
+    ),
 
-    // ── Conversion ────────────────────────────────────────────────────────────
-    {
-      url: `${baseUrl}/careers`,
+    // ── Resources hub ─────────────────────────────────────────────────────────
+    { url: `${SITE_URL}/resources`,   lastModified: now, changeFrequency: 'daily',   priority: 0.8 },
+
+    // ── Resource category pages (generated from config) ───────────────────────
+    ...RESOURCES.map((r) => ({
+      url: `${SITE_URL}${resourceHref(r.slug)}`,
       lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/consultation`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 1.0,
-    },
+      changeFrequency: 'daily' as const,
+      priority: 0.75,
+    })),
 
     // ── Support ───────────────────────────────────────────────────────────────
-    {
-      url: `${baseUrl}/support`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/support/faq`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
+    { url: `${SITE_URL}/support`,     lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
 
     // ── Legal ─────────────────────────────────────────────────────────────────
-    {
-      url: `${baseUrl}/legal/privacy`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/legal/terms`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/legal/cookies`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
+    { url: `${SITE_URL}/legal/privacy`,  lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${SITE_URL}/legal/terms`,    lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${SITE_URL}/legal/cookies`,  lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ];
 }

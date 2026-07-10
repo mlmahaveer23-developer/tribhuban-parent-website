@@ -77,7 +77,7 @@ const customerCategories = [
       'Payback period: 2.5–3 years',
       'Collateral-free bank loans at ~7% for systems up to 3 kW',
     ],
-    cta: { label: 'Calculate Residential Savings', href: '/solar/calculator?type=residential' },
+    cta: { label: 'Calculate Residential Savings', href: '/businesses/rooftop-solar/solar-calculator?type=residential' },
     highlight: true,
   },
   {
@@ -91,7 +91,7 @@ const customerCategories = [
       'Non-DCR imported panels permissible',
       'Higher-wattage bifacial modules available',
     ],
-    cta: { label: 'Commercial ROI Calculator', href: '/solar/calculator?type=commercial' },
+    cta: { label: 'Commercial ROI Calculator', href: '/businesses/rooftop-solar/roi-calculator?type=commercial' },
     highlight: false,
   },
   {
@@ -151,9 +151,9 @@ const faqs = [
 ] as const;
 
 const solarBlogs = [
-  { slug: 'complete-guide-rooftop-solar-odisha-2026', tag: 'Odisha Solar', title: 'Complete Guide to Rooftop Solar in Odisha (2026)', excerpt: 'Everything you need to know about solar installation in Odisha — subsidies, tariffs, ELBO compliance, ALMM List-II, and step-by-step application process.', readTime: 12 },
-  { slug: 'pm-surya-ghar-oasby-subsidy-guide', tag: 'Subsidies', title: 'PM Surya Ghar & Odisha OASBY: Subsidies, Eligibility & Application Guide', excerpt: 'Detailed breakdown of the dual-subsidy architecture — central DBT and state OASBY — with exact slabs, eligibility criteria, and application walkthrough.', readTime: 10 },
-  { slug: 'rooftop-solar-roi-costs-savings-payback', tag: 'Finance', title: 'Rooftop Solar ROI Explained: Costs, Savings & Long-Term Benefits', excerpt: 'Engineering-grade financial model: OERC telescopic tariffs, net investment after subsidies, payback calculation, 25-year savings projection, and CO₂ impact.', readTime: 9 },
+  { slug: 'complete-guide-rooftop-solar-odisha-2026', tag: 'Odisha Solar', title: 'Complete Guide to Rooftop Solar in Odisha (2026)', excerpt: 'Everything you need to know about solar installation in Odisha — subsidies, tariffs, ELBO compliance, ALMM List-II, and step-by-step application process.', readTime: 12, href: '/resources/blogs' },
+  { slug: 'pm-surya-ghar-oasby-subsidy-guide', tag: 'Subsidies', title: 'PM Surya Ghar & Odisha OASBY: Subsidies, Eligibility & Application Guide', excerpt: 'Detailed breakdown of the dual-subsidy architecture — central DBT and state OASBY — with exact slabs, eligibility criteria, and application walkthrough.', readTime: 10, href: '/resources/blogs' },
+  { slug: 'rooftop-solar-roi-costs-savings-payback', tag: 'Finance', title: 'Rooftop Solar ROI Explained: Costs, Savings & Long-Term Benefits', excerpt: 'Engineering-grade financial model: OERC telescopic tariffs, net investment after subsidies, payback calculation, 25-year savings projection, and CO₂ impact.', readTime: 9, href: '/resources/blogs' },
 ] as const;
 
 const primaryBtn = 'inline-flex items-center justify-center h-12 px-8 rounded-md text-base font-semibold bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)] hover:bg-[var(--btn-primary-hover)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]';
@@ -212,7 +212,12 @@ export default function SolarPage() {
             <nav aria-label="Breadcrumb" className="mb-8">
               <ol className="flex flex-wrap items-center gap-1 text-sm text-white/60" role="list">
                 <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
-                <li><span aria-hidden="true" className="mx-1 text-white/40">/</span><span aria-current="page" className="font-medium text-white/80">Solar</span></li>
+                <li><span aria-hidden="true" className="mx-1 text-white/40">/</span>
+                  <Link href="/businesses" className="hover:text-white transition-colors">Businesses</Link>
+                </li>
+                <li><span aria-hidden="true" className="mx-1 text-white/40">/</span>
+                  <span aria-current="page" className="font-medium text-white/80">Rooftop Solar</span>
+                </li>
               </ol>
             </nav>
             <ScrollReveal variant="fadeUp">
@@ -235,7 +240,7 @@ export default function SolarPage() {
                 <div className="flex flex-col sm:flex-row items-start gap-4">
                   <Link href="/consultation" className={primaryBtn}>Book Free Consultation</Link>
                   <Link
-                    href="/solar/calculator"
+                    href="/businesses/rooftop-solar/solar-calculator"
                     className="inline-flex items-center justify-center h-12 px-8 rounded-md text-base font-semibold border border-white/40 bg-white/10 text-white hover:bg-white/20 hover:border-white/60 backdrop-blur-sm transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                   >
                     Calculate My Savings
