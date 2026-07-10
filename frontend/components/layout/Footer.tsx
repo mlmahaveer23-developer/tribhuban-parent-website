@@ -54,44 +54,16 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 2 — Solutions */}
+          {/* Column 2 — Businesses */}
           <div>
             <h2 className="font-display font-semibold text-sm uppercase tracking-wider text-[var(--fg-subtle)] mb-4">
-              Solutions
+              Businesses
             </h2>
             <ul className="space-y-2 list-none p-0 m-0">
-              <li>
-                <Link
-                  href="/solar"
-                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
-                >
-                  Solar
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/products"
-                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
-                >
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/future-technologies"
-                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
-                >
-                  Future Technologies
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/solar/calculator"
-                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
-                >
-                  Calculator
-                </Link>
-              </li>
+              <li><Link href="/businesses/rooftop-solar" className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm">Rooftop Solar</Link></li>
+              <li><Link href="/businesses/fmcg-distribution" className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm">FMCG Distribution</Link></li>
+              <li><Link href="/businesses/rooftop-solar/solar-calculator" className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm">Solar Calculator</Link></li>
+              <li><Link href="/businesses" className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm">All Businesses</Link></li>
             </ul>
           </div>
 
@@ -101,38 +73,10 @@ export default function Footer() {
               Resources
             </h2>
             <ul className="space-y-2 list-none p-0 m-0">
-              <li>
-                <Link
-                  href="/blog"
-                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
-                >
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/knowledge"
-                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
-                >
-                  Knowledge Center
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/support"
-                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
-                >
-                  Support
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/support/faq"
-                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
-                >
-                  FAQ
-                </Link>
-              </li>
+              <li><Link href="/resources/blogs" className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm">Blog</Link></li>
+              <li><Link href="/resources/guides" className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm">Guides</Link></li>
+              <li><Link href="/resources/documentation" className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm">Documentation</Link></li>
+              <li><Link href="/resources/faqs" className="text-sm text-[var(--fg-muted)] hover:text-[var(--accent)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm">FAQs</Link></li>
             </ul>
           </div>
 

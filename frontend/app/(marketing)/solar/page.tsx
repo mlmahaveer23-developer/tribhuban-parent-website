@@ -15,7 +15,7 @@ const serviceJsonLd = {
   name: 'Rooftop Solar Energy Solutions',
   provider: { '@type': 'Organization', name: 'Tribhuban Concepts', url: 'https://tribhubanconcepts.com' },
   description: 'Precision-engineered rooftop solar systems for residential and commercial properties across India.',
-  url: 'https://tribhubanconcepts.com/solar',
+  url: 'https://tribhubanconcepts.com/businesses/rooftop-solar',
   areaServed: { '@type': 'Country', name: 'India' },
   serviceType: 'Solar Energy Installation',
 };
@@ -25,7 +25,8 @@ const breadcrumbJsonLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://tribhubanconcepts.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Solar', item: 'https://tribhubanconcepts.com/solar' },
+    { '@type': 'ListItem', position: 2, name: 'Businesses', item: 'https://tribhubanconcepts.com/businesses' },
+    { '@type': 'ListItem', position: 3, name: 'Rooftop Solar', item: 'https://tribhubanconcepts.com/businesses/rooftop-solar' },
   ],
 };
 
@@ -45,9 +46,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Rooftop Solar Energy Solutions — Tribhuban Concepts',
     description: 'Complete guide to rooftop solar in Odisha & India. PM Surya Ghar subsidies, OASBY top-up, ROI calculator, and free consultation from certified EPC engineers.',
-    alternates: { canonical: 'https://tribhubanconcepts.com/solar' },
+    alternates: { canonical: 'https://tribhubanconcepts.com/businesses/rooftop-solar' },
     openGraph: {
-      type: 'website', url: 'https://tribhubanconcepts.com/solar',
+      type: 'website', url: 'https://tribhubanconcepts.com/businesses/rooftop-solar',
       title: 'Rooftop Solar Energy Solutions — Tribhuban Concepts',
       description: 'Precision-engineered rooftop solar systems. Central + State subsidies up to ₹1.38 Lakh. Payback in under 3 years.',
       siteName: 'Tribhuban Concepts',

@@ -3,6 +3,17 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { RESOURCES, resourceHref, SITE_URL } from '@/lib/siteConfig';
 
+// FAQ JSON-LD data (only injected when category === 'faqs')
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    { '@type': 'Question', name: 'How does a rooftop solar system work?', acceptedAnswer: { '@type': 'Answer', text: 'Rooftop solar panels convert sunlight into DC electricity. An inverter converts this to AC for home/business use. Surplus is exported to the grid via net metering or stored in a battery.' } },
+    { '@type': 'Question', name: 'Are there government subsidies available?', acceptedAnswer: { '@type': 'Answer', text: 'Yes. PM Surya Ghar offers central subsidies for residential systems up to 3 kW, and Odisha OASBY adds a state top-up, for a combined maximum of ₹1,38,000.' } },
+    { '@type': 'Question', name: 'Is BESS mandatory for my rooftop solar system?', acceptedAnswer: { '@type': 'Answer', text: 'OERC mandates BESS for systems of 5 kW and above. Systems up to 4 kW are standard on-grid.' } },
+  ],
+};
+
 export const revalidate = 3600;
 
 interface Props {
@@ -45,6 +56,9 @@ export default async function ResourceCategoryPage({ params }: Props) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      {category === 'faqs' && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      )}
       <main id="main-content">
         {/* Hero */}
         <section className="bg-[var(--bg-subtle)] border-b border-[var(--border)] py-14 sm:py-20">

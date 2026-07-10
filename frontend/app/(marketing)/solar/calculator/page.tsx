@@ -7,7 +7,7 @@ import { OdishaSolarCalculator } from '@/components/solar/OdishaSolarCalculator'
 export const metadata: Metadata = {
   title: 'Solar ROI Calculator — Odisha Subsidies, Payback & Savings',
   description: 'Engineering-grade solar ROI calculator for Odisha. PM Surya Ghar + OASBY subsidies, OERC telescopic tariffs, payback period, 25-year savings, CO₂ offset.',
-  alternates: { canonical: '/solar/calculator' },
+  alternates: { canonical: '/businesses/rooftop-solar/solar-calculator' },
   robots: { index: true, follow: true },
 };
 
@@ -16,7 +16,7 @@ const jsonLd = {
   '@type': 'WebApplication',
   name: 'Odisha Solar ROI Calculator',
   description: 'Calculate rooftop solar ROI with PM Surya Ghar + OASBY subsidies and OERC 2026–27 tariffs.',
-  url: 'https://tribhubanconcepts.com/solar/calculator',
+  url: 'https://tribhubanconcepts.com/businesses/rooftop-solar/solar-calculator',
   applicationCategory: 'FinanceApplication',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
 };
@@ -43,7 +43,7 @@ export default function SolarCalculatorPage() {
           <div className="container-content">
             <nav aria-label="Breadcrumb" className="mb-6">
               <ol className="flex flex-wrap items-center gap-1 text-sm text-[var(--fg-subtle)]" role="list">
-                {[{ label: 'Home', href: '/' }, { label: 'Solar', href: '/solar' }, { label: 'Calculator', href: null }].map((c, i) => (
+                {[{ label: 'Home', href: '/' }, { label: 'Businesses', href: '/businesses' }, { label: 'Rooftop Solar', href: '/businesses/rooftop-solar' }, { label: 'Calculator', href: null }].map((c, i) => (
                   <li key={c.label} className="flex items-center gap-1">
                     {i > 0 && <span aria-hidden="true" className="text-[var(--fg-subtle)]">/</span>}
                     {c.href ? <Link href={c.href} className="hover:text-[var(--accent)] transition-colors">{c.label}</Link> : <span aria-current="page" className="font-medium text-[var(--fg-muted)]">{c.label}</span>}

@@ -291,11 +291,11 @@ export default function FutureTechnologiesPage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <div className="text-center">
-              <Link href="/products" className={primaryBtn}>
-                View Product Concepts
+              <Link href="/businesses" className={primaryBtn}>
+                View Our Businesses
               </Link>
               <p className="mt-2 text-xs text-[var(--fg-subtle)]">
-                Solar OS · EnergyBot · GridLink
+                Rooftop Solar · FMCG · HRDS
               </p>
             </div>
             <div className="text-center">
@@ -314,10 +314,10 @@ export default function FutureTechnologiesPage() {
               Want to go deeper on the technical fundamentals?
             </p>
             <Link
-              href="/knowledge"
+              href="/resources"
               className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] rounded-sm"
             >
-              Explore the Knowledge Centre →
+              Explore Resources →
             </Link>
           </div>
         </div>

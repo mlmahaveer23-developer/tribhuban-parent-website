@@ -126,10 +126,10 @@ export default function SolarLearnPage() {
               <li className="flex items-center gap-1">
                 <span aria-hidden="true" className="select-none">/</span>
                 <Link
-                  href="/solar"
+                  href="/businesses/rooftop-solar"
                   className="hover:text-[var(--accent)] transition-colors focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
                 >
-                  Solar
+                  Rooftop Solar
                 </Link>
               </li>
               <li className="flex items-center gap-1">
@@ -287,7 +287,7 @@ export default function SolarLearnPage() {
               <p className="text-sm text-[var(--fg-muted)] leading-relaxed flex-1">
                 Get an instant estimate for your system size, annual savings, and payback period.
               </p>
-              <Link href="/solar/calculator" className={accentLink}>
+              <Link href="/businesses/rooftop-solar/solar-calculator" className={accentLink}>
                 Calculate My Savings →
               </Link>
             </div>
