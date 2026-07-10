@@ -34,9 +34,7 @@ export default async function ProductPage({ params }: Props) {
   const product = biz?.products.find((p) => p.slug === productSlug);
   if (!biz || !product) notFound();
 
-  const isCalculator = ['solar-calculator', 'subsidy-calculator', 'roi-calculator'].includes(
-    productSlug,
-  );
+  const isCalculator = productSlug === 'solar-calculator';
 
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
