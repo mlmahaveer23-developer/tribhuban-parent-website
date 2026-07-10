@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 const SITE_NAME = 'Tribhuban Concepts';
-const BASE_URL = 'https://tribhubanconcepts.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? 'https://tribhuban-parent-website.vercel.app';
 const DEFAULT_OG_IMAGE = '/og-default.png';
 
 export interface BaseMetadataOptions {

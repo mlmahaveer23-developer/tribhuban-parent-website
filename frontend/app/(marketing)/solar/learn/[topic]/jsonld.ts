@@ -9,7 +9,7 @@ export function buildLearningResourceJsonLd(topic: string, title: string) {
     '@context': 'https://schema.org',
     '@type': 'LearningResource',
     name: title,
-    url: `https://tribhubanconcepts.com/solar/learn/${topic}`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn/${topic}`,
     provider: {
       '@type': 'Organization',
       name: 'Tribhuban Concepts',
@@ -30,25 +30,25 @@ export function buildBreadcrumbJsonLd(topic: string, title: string) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://tribhubanconcepts.com/',
+        item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Solar',
-        item: 'https://tribhubanconcepts.com/solar',
+        item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: 'Learning Hub',
-        item: 'https://tribhubanconcepts.com/solar/learn',
+        item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn',
       },
       {
         '@type': 'ListItem',
         position: 4,
         name: title,
-        item: `https://tribhubanconcepts.com/solar/learn/${topic}`,
+        item: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn/${topic}`,
       },
     ],
   };

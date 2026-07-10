@@ -7,7 +7,7 @@ const aboutPageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
   name: 'About Tribhuban Concepts',
-  url: 'https://tribhubanconcepts.com/about',
+  url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/about',
   description:
     'Learn about Tribhuban Concepts — our mission, values, timeline, leadership, and sustainability commitment.',
 };
@@ -16,7 +16,7 @@ const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Tribhuban Concepts',
-  url: 'https://tribhubanconcepts.com',
+  url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}',
   foundingDate: '2014',
   description:
     'Indian technology and engineering company specialising in solar energy and future technologies',
@@ -29,10 +29,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'About — Tribhuban Concepts',
     description:
       'Learn about Tribhuban Concepts — an Indian technology and engineering company. Our mission, values, milestones, and the meaning of "Tribhuban".',
-    alternates: { canonical: 'https://tribhubanconcepts.com/about' },
+    alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/about' },
     openGraph: {
       type: 'website',
-      url: 'https://tribhubanconcepts.com/about',
+      url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/about',
       title: 'About — Tribhuban Concepts',
       description:
         'Learn about Tribhuban Concepts — our mission, values, milestones, leadership, and sustainability commitment.',

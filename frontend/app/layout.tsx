@@ -29,7 +29,7 @@ const sansFont = Inter({
    Root Metadata
 ───────────────────────────────────────────────────────────────────────────── */
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tribhubanconcepts.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'),
   title: {
     default: 'Tribhuban Concepts — Technology That Reaches Everywhere',
     template: '%s — Tribhuban Concepts',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Tribhuban Concepts',
     locale: 'en_IN',
-    url: 'https://tribhubanconcepts.com',
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app',
   },
   twitter: {
     card: 'summary_large_image',

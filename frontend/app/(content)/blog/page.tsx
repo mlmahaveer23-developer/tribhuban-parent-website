@@ -5,7 +5,7 @@ import { solarBlogPosts } from '@/lib/content/solar-blogs';
 export const metadata: Metadata = {
   title: 'Blog — Solar, Technology & Engineering Insights',
   description: 'Insights, guides, and updates from the Tribhuban Concepts team on rooftop solar, future technologies, and engineering.',
-  alternates: { canonical: 'https://tribhubanconcepts.com/blog' },
+  alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/blog' },
 };
 
 export const revalidate = 600;

@@ -16,7 +16,7 @@ const jsonLd = {
   '@type': 'WebApplication',
   name: 'Odisha Solar ROI Calculator',
   description: 'Calculate rooftop solar ROI with PM Surya Ghar + OASBY subsidies and OERC 2026–27 tariffs.',
-  url: 'https://tribhubanconcepts.com/businesses/rooftop-solar/solar-calculator',
+  url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses/rooftop-solar/solar-calculator',
   applicationCategory: 'FinanceApplication',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
 };
@@ -25,9 +25,9 @@ const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://tribhubanconcepts.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Solar', item: 'https://tribhubanconcepts.com/solar' },
-    { '@type': 'ListItem', position: 3, name: 'Calculator', item: 'https://tribhubanconcepts.com/solar/calculator' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/' },
+    { '@type': 'ListItem', position: 2, name: 'Solar', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar' },
+    { '@type': 'ListItem', position: 3, name: 'Calculator', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/calculator' },
   ],
 };
 

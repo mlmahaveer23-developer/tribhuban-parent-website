@@ -11,10 +11,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Solar Learning Hub — Tribhuban Concepts',
     description:
       'In-depth articles on solar energy — Basics, Economics, Technology, and Maintenance. Written by engineers for homeowners and businesses.',
-    alternates: { canonical: 'https://tribhubanconcepts.com/solar/learn' },
+    alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn' },
     openGraph: {
       type: 'website',
-      url: 'https://tribhubanconcepts.com/solar/learn',
+      url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn',
       title: 'Solar Learning Hub — Tribhuban Concepts',
       description:
         'In-depth articles on solar energy — Basics, Economics, Technology, and Maintenance.',

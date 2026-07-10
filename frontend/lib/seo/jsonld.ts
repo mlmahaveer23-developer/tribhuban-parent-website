@@ -6,7 +6,7 @@
  * The `JsonLd` component in components/seo/ handles the script injection.
  */
 
-const BASE_URL = 'https://tribhubanconcepts.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? 'https://tribhuban-parent-website.vercel.app';
 const ORG_NAME = 'Tribhuban Concepts';
 const ORG_LOGO = `${BASE_URL}/logo.png`;
 

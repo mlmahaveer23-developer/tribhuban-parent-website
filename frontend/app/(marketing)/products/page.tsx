@@ -16,10 +16,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Future Products — Tribhuban Concepts',
     description:
       'Explore the technology products Tribhuban Concepts is building — Solar OS, EnergyBot, and GridLink. Register your interest and stay ahead.',
-    alternates: { canonical: 'https://tribhubanconcepts.com/products' },
+    alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/products' },
     openGraph: {
       type: 'website',
-      url: 'https://tribhubanconcepts.com/products',
+      url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/products',
       title: 'Future Products — Tribhuban Concepts',
       description:
         'Solar OS, EnergyBot, and GridLink — the technology products Tribhuban Concepts is building.',

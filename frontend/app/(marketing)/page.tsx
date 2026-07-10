@@ -13,7 +13,7 @@ const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Tribhuban Concepts',
-  url: 'https://tribhubanconcepts.com',
+  url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}',
   description:
     'Indian technology and engineering company specialising in solar energy and future technologies',
 };
@@ -22,12 +22,12 @@ const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'Tribhuban Concepts',
-  url: 'https://tribhubanconcepts.com',
+  url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}',
   potentialAction: {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: 'https://tribhubanconcepts.com/search?q={search_term_string}',
+      urlTemplate: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/search?q={search_term_string}',
     },
     'query-input': 'required name=search_term_string',
   },
@@ -40,10 +40,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Tribhuban Concepts — Technology That Reaches Everywhere',
     description:
       'Tribhuban Concepts is an Indian technology and engineering company specialising in solar energy and future technologies.',
-    alternates: { canonical: 'https://tribhubanconcepts.com' },
+    alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}' },
     openGraph: {
       type: 'website',
-      url: 'https://tribhubanconcepts.com',
+      url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}',
       title: 'Tribhuban Concepts — Technology That Reaches Everywhere',
       description:
         'Indian technology and engineering company specialising in solar energy and future technologies.',

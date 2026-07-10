@@ -113,7 +113,7 @@ export const metadata: Metadata = {
   title: 'FAQ — Tribhuban Concepts',
   description:
     'Frequently asked questions about Tribhuban Concepts solar systems, pricing, financing, and technical support.',
-  alternates: { canonical: 'https://tribhubanconcepts.com/support/faq' },
+  alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/support/faq' },
   openGraph: {
     title: 'FAQ — Tribhuban Concepts',
     description:

@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} — Tribhuban Concepts`,
     description: post.excerpt,
-    alternates: { canonical: `https://tribhubanconcepts.com/blog/${post.slug}` },
+    alternates: { canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/blog/${post.slug}` },
     openGraph: { type: 'article', title: post.title, description: post.excerpt, siteName: 'Tribhuban Concepts' },
   };
 }
@@ -37,7 +37,7 @@ export default async function BlogArticlePage({ params }: Props) {
     author: { '@type': 'Organization', name: 'Tribhuban Concepts' },
     publisher: { '@type': 'Organization', name: 'Tribhuban Concepts' },
     datePublished: post.date,
-    url: `https://tribhubanconcepts.com/blog/${post.slug}`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/blog/${post.slug}`,
   };
 
   return (

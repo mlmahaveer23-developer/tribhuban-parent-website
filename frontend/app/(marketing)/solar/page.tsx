@@ -13,9 +13,9 @@ const serviceJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
   name: 'Rooftop Solar Energy Solutions',
-  provider: { '@type': 'Organization', name: 'Tribhuban Concepts', url: 'https://tribhubanconcepts.com' },
+  provider: { '@type': 'Organization', name: 'Tribhuban Concepts', url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}' },
   description: 'Precision-engineered rooftop solar systems for residential and commercial properties across India.',
-  url: 'https://tribhubanconcepts.com/businesses/rooftop-solar',
+  url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses/rooftop-solar',
   areaServed: { '@type': 'Country', name: 'India' },
   serviceType: 'Solar Energy Installation',
 };
@@ -24,9 +24,9 @@ const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://tribhubanconcepts.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Businesses', item: 'https://tribhubanconcepts.com/businesses' },
-    { '@type': 'ListItem', position: 3, name: 'Rooftop Solar', item: 'https://tribhubanconcepts.com/businesses/rooftop-solar' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/' },
+    { '@type': 'ListItem', position: 2, name: 'Businesses', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses' },
+    { '@type': 'ListItem', position: 3, name: 'Rooftop Solar', item: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses/rooftop-solar' },
   ],
 };
 
@@ -46,9 +46,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Rooftop Solar Energy Solutions — Tribhuban Concepts',
     description: 'Complete guide to rooftop solar in Odisha & India. PM Surya Ghar subsidies, OASBY top-up, ROI calculator, and free consultation from certified EPC engineers.',
-    alternates: { canonical: 'https://tribhubanconcepts.com/businesses/rooftop-solar' },
+    alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses/rooftop-solar' },
     openGraph: {
-      type: 'website', url: 'https://tribhubanconcepts.com/businesses/rooftop-solar',
+      type: 'website', url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/businesses/rooftop-solar',
       title: 'Rooftop Solar Energy Solutions — Tribhuban Concepts',
       description: 'Precision-engineered rooftop solar systems. Central + State subsidies up to ₹1.38 Lakh. Payback in under 3 years.',
       siteName: 'Tribhuban Concepts',
@@ -429,7 +429,7 @@ export default function SolarPage() {
                   <h2 id="net-metering-heading" className="font-display text-3xl sm:text-4xl font-semibold text-[var(--fg)] mb-5">Net Metering in Odisha</h2>
                   <p className="text-lg text-[var(--fg-muted)] leading-relaxed mb-4">When your system generates more than you consume, the surplus is exported to the grid and credited to your account. Monthly credits carry forward; at year-end any remaining credits are paid out at APPC rate.</p>
                   <p className="text-base text-[var(--fg-muted)] leading-relaxed mb-6">OERC&apos;s telescopic tariff structure makes sizing especially important — a solar system eliminates the <em>most expensive</em> top-tier units first (₹5.70–₹6.10/kWh), yielding disproportionately high returns for heavy consumers.</p>
-                  <Link href="/solar/learn/net-metering" className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent)] hover:underline">Learn about net metering →</Link>
+                  <Link href="/resources/guides" className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent)] hover:underline">Learn about net metering →</Link>
                 </div>
                 <StaggerGroup variant="scale" stagger={0.06} className="grid grid-cols-2 gap-4">
                   {netMeteringFacts.map((fact) => (
@@ -499,12 +499,12 @@ export default function SolarPage() {
             <ScrollReveal variant="clipUp">
               <div className="flex items-center justify-between mb-8">
                 <h2 id="solar-blogs-heading" className="font-display text-3xl font-semibold text-[var(--fg)]">Solar Guides & Resources</h2>
-                <Link href="/blog?category=solar" className="text-sm font-semibold text-[var(--accent)] hover:underline">View all →</Link>
+                <Link href="/resources/blogs?category=solar" className="text-sm font-semibold text-[var(--accent)] hover:underline">View all →</Link>
               </div>
             </ScrollReveal>
             <StaggerGroup variant="fadeUp" stagger={0.1} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {solarBlogs.map((blog) => (
-                <Link key={blog.slug} href={`/blog/${blog.slug}`} className="group rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] overflow-hidden hover:shadow-[var(--shadow-lg)] hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                <Link key={blog.slug} href={`/resources/blogs/${blog.slug}`} className="group rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)] overflow-hidden hover:shadow-[var(--shadow-lg)] hover:-translate-y-1 transition-all duration-300 flex flex-col">
                   <div className="h-40 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(180,83,9,0.08), rgba(201,162,39,0.08))' }}>
                     <span className="text-4xl">📖</span>
                   </div>
@@ -528,7 +528,7 @@ export default function SolarPage() {
               <p className="text-lg text-[var(--fg-muted)] mb-8 leading-relaxed">Our ELBO-licensed engineers will survey your rooftop, review your DISCOM bills, verify subsidy eligibility, and deliver a site-specific proposal — with no obligation and no pressure.</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link href="/consultation" className={primaryBtn}>Book Free Consultation</Link>
-                <Link href="/solar/calculator" className={ghostBtn}>Calculate First</Link>
+                <Link href="/businesses/rooftop-solar/solar-calculator" className={ghostBtn}>Calculate First</Link>
               </div>
             </div>
           </ScrollReveal>

@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { LEGACY_REDIRECTS } from '@/lib/siteConfig';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
+// CANONICAL_HOST is read from env so it works on Vercel without a custom domain.
+// Set NEXT_PUBLIC_SITE_URL in Vercel environment variables, e.g.:
+//   https://tribhuban-parent-website.vercel.app
+// When you purchase a real domain, update the env var only.
 
-const CANONICAL_HOST   = 'tribhubanconcepts.com';
-const CANONICAL_ORIGIN = `https://${CANONICAL_HOST}`;
+const RAW_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app';
+const CANONICAL_ORIGIN = RAW_SITE_URL.replace(/\/$/, '');
+const CANONICAL_HOST   = CANONICAL_ORIGIN.replace(/^https?:\/\//, '');
 
 const RESERVED_PREFIXES = [
   '/app', '/dashboard', '/portal', '/partner', '/customer', '/api/internal',

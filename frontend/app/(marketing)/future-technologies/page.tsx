@@ -11,10 +11,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Future Technologies — Tribhuban Concepts',
     description:
       'Discover Tribhuban Concepts\'s R&D vision — AI & Energy, Advanced Materials, Grid Intelligence, and Sustainable Infrastructure. Engineering the future today.',
-    alternates: { canonical: 'https://tribhubanconcepts.com/future-technologies' },
+    alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/future-technologies' },
     openGraph: {
       type: 'website',
-      url: 'https://tribhubanconcepts.com/future-technologies',
+      url: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/future-technologies',
       title: 'Future Technologies — Tribhuban Concepts',
       description:
         'AI & Energy, Advanced Materials, Grid Intelligence, and Sustainable Infrastructure — our R&D vision.',

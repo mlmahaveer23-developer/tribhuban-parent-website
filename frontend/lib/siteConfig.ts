@@ -202,5 +202,9 @@ export const LEGACY_REDIRECTS: Record<string, string> = {
 };
 
 // ── Site base URL ─────────────────────────────────────────────────────────────
+// Reads from NEXT_PUBLIC_SITE_URL env var at build time.
+// On Vercel without a custom domain, set this to your .vercel.app URL.
+// When you purchase a domain, update the env var — nothing else changes.
 
-export const SITE_URL = 'https://tribhubanconcepts.com';
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? 'https://tribhuban-parent-website.vercel.app';

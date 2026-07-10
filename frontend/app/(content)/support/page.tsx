@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: 'Support — Tribhuban Concepts',
   description:
     'Get help with Tribhuban Concepts solar systems, products, billing, and more. Browse categories, popular articles, or contact our team.',
-  alternates: { canonical: 'https://tribhubanconcepts.com/support' },
+  alternates: { canonical: '${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/support' },
   openGraph: {
     title: 'Support — Tribhuban Concepts',
     description:

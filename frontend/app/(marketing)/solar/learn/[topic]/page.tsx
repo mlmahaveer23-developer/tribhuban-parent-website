@@ -34,11 +34,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${title} — Solar Learning Hub — Tribhuban Concepts`,
     description: `Learn about ${title.toLowerCase()} in solar energy. Practical, engineer-written guide for homeowners and businesses.`,
     alternates: {
-      canonical: `https://tribhubanconcepts.com/solar/learn/${topic}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn/${topic}`,
     },
     openGraph: {
       type: 'article',
-      url: `https://tribhubanconcepts.com/solar/learn/${topic}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tribhuban-parent-website.vercel.app'}/solar/learn/${topic}`,
       title: `${title} — Solar Learning Hub`,
       description: `Learn about ${title.toLowerCase()} in solar energy.`,
       siteName: 'Tribhuban Concepts',
