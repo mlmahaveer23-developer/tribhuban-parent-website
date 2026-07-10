@@ -184,6 +184,14 @@ export default function SolarPage() {
         <section
           aria-label="Solar hero"
           className="relative min-h-[60vh] md:min-h-[72vh] pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden bg-[#0e1a0e]"
+          style={{
+            // Poster image as CSS background — visible on SSR before JS hydrates
+            // and acts as a final fallback if both video and <video poster> fail
+            backgroundImage: 'url(/rooftop-solar-poster.webp)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center 30%',
+            backgroundRepeat: 'no-repeat',
+          }}
         >
           {/* ── Video background ────────────────────────────────────────── */}
           <SolarHeroVideo />
