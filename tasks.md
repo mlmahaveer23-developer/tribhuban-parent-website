@@ -4,7 +4,7 @@
 
 This plan implements the Tribhuban Concepts public-facing website as a decoupled, content-driven platform: a Next.js (TypeScript, App Router) frontend and a FastAPI (Python) backend. Tasks are ordered so each step builds on the last, with no orphaned code, and every component is wired before the epic closes.
 
-## Tasks
+## Tasks 
 
 - [x] 1. Project scaffolding and shared foundations
   - [x] 1.1 Scaffold frontend (Next.js App Router, TypeScript, Tailwind) and backend (FastAPI, Python) directory structures per design §5.6 and §8.10

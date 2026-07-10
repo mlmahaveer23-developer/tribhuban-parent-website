@@ -3,12 +3,17 @@
  *
  * Server Component — mounts ConsultationForm as a client island.
  * Design: copper/gold/ivory, two-col layout on lg (form left, trust right).
+ * 
+ * Updated with navigation section links to provide context and guide users
+ * through different consultation pathways based on their interests across
+ * Company, Solutions, Resources, and Legal sections.
  *
  * Requirements: 7.2, 7.9, 24.4
  */
 
 import type { Metadata } from 'next';
-import { Shield, Users, Zap } from 'lucide-react';
+import { Shield, Users, Zap, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 import { ConsultationForm } from '@/components/forms/ConsultationForm';
 
@@ -143,6 +148,178 @@ export default function ConsultationPage() {
               </p>
             </div>
           </aside>
+        </div>
+      </section>
+
+      {/* ── Navigation Sections: Relevant Links ────────────────────────── */}
+      <section aria-labelledby="nav-sections-heading" className="container-content py-16 sm:py-20 border-t border-default">
+        <h2 id="nav-sections-heading" className="mb-12 font-display text-2xl font-semibold text-page text-center">
+          Explore Our Offerings
+        </h2>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+          {/* Column 1 — Company */}
+          <div className="rounded-2xl border border-default bg-surface p-6 sm:p-8">
+            <h3 className="mb-4 font-display text-lg font-semibold text-page uppercase tracking-wider">
+              Company
+            </h3>
+            <ul className="space-y-3 list-none p-0 m-0">
+              <li>
+                <Link
+                  href="/about"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  About
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/careers"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Careers
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Contact
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 2 — Solutions */}
+          <div className="rounded-2xl border border-default bg-surface p-6 sm:p-8">
+            <h3 className="mb-4 font-display text-lg font-semibold text-page uppercase tracking-wider">
+              Solutions
+            </h3>
+            <ul className="space-y-3 list-none p-0 m-0">
+              <li>
+                <Link
+                  href="/solar"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Solar
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/products"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Products
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/future-technologies"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Future Tech
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/solar/calculator"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Calculator
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3 — Resources */}
+          <div className="rounded-2xl border border-default bg-surface p-6 sm:p-8">
+            <h3 className="mb-4 font-display text-lg font-semibold text-page uppercase tracking-wider">
+              Resources
+            </h3>
+            <ul className="space-y-3 list-none p-0 m-0">
+              <li>
+                <Link
+                  href="/blog"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Blog
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/knowledge"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Knowledge
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/support"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Support
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/support/faq"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  FAQ
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4 — Legal */}
+          <div className="rounded-2xl border border-default bg-surface p-6 sm:p-8">
+            <h3 className="mb-4 font-display text-lg font-semibold text-page uppercase tracking-wider">
+              Legal &amp; Info
+            </h3>
+            <ul className="space-y-3 list-none p-0 m-0">
+              <li>
+                <Link
+                  href="/legal/privacy"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Privacy
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/legal/terms"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Terms
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/legal/cookies"
+                  className="group inline-flex items-center text-sm font-medium text-accent hover:text-[var(--accent-hover)] transition-colors"
+                >
+                  Cookies
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
     </main>
