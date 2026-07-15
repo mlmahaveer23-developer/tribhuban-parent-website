@@ -5,6 +5,7 @@ import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ConsentBanner from '@/components/layout/ConsentBanner';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Fonts — self-hosted via next/font, display: swap, subsets for CWV.
@@ -111,19 +112,21 @@ export default function RootLayout({
           Skip to main content
         </a>
 
-        {/* Consent banner — client component, returns null until task 18.1 */}
-        <ConsentBanner />
+        <AuthProvider>
+          {/* Consent banner — client component, returns null until task 18.1 */}
+          <ConsentBanner />
 
-        {/* Global header with sticky nav */}
-        <Header />
+          {/* Global header with sticky nav */}
+          <Header />
 
-        {/* Single <main> landmark — pages render their content here */}
-        <main id="main-content" role="main" className="flex-1">
-          {children}
-        </main>
+          {/* Single <main> landmark — pages render their content here */}
+          <main id="main-content" role="main" className="flex-1">
+            {children}
+          </main>
 
-        {/* Global footer */}
-        <Footer />
+          {/* Global footer */}
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

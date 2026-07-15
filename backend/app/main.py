@@ -262,6 +262,7 @@ def create_app() -> FastAPI:
     from app.api.v1.careers import router as careers_router  # noqa: PLC0415
     from app.api.v1.admin import router as admin_router  # noqa: PLC0415
     from app.api.v1.revalidate import router as revalidate_router  # noqa: PLC0415
+    from app.api.v1.auth import router as auth_router  # noqa: PLC0415
 
     app.include_router(system_router, prefix=settings.api_v1_prefix)
     app.include_router(solar_router, prefix=settings.api_v1_prefix)
@@ -274,6 +275,8 @@ def create_app() -> FastAPI:
     app.include_router(admin_router, prefix=settings.api_v1_prefix)
     # ISR on-demand revalidation (internal, signed with X-Revalidate-Secret)
     app.include_router(revalidate_router, prefix=settings.api_v1_prefix)
+    # Authentication routes (user identity verification)
+    app.include_router(auth_router, prefix=settings.api_v1_prefix)
 
     return app
 

@@ -111,6 +111,24 @@ class Settings(BaseSettings):
     sentry_dsn: str = Field(default="", description="Sentry DSN (empty to disable)")
     otel_exporter_otlp_endpoint: str = Field(default="", description="OTLP endpoint (empty to disable)")
 
+    # ── Supabase Auth ─────────────────────────────────────────────────────────
+    supabase_jwt_secret: str = Field(
+        default="",
+        description=(
+            "Supabase JWT secret used to verify auth tokens on backend API routes. "
+            "Found in: Supabase Dashboard → Project Settings → API → JWT Settings. "
+            "Required in production."
+        ),
+    )
+    supabase_project_url: str = Field(
+        default="",
+        description=(
+            "Supabase project REST API base URL. "
+            "Found in: Supabase Dashboard → Project Settings → API → Project URL. "
+            "Format: https://<project-ref>.supabase.co"
+        ),
+    )
+
     # ── Organisation ──────────────────────────────────────────────────────────
     default_org_id: str = Field(
         default="00000000-0000-0000-0000-000000000001",
@@ -137,6 +155,17 @@ class Settings(BaseSettings):
         if not self.aws_access_key_id and not self.aws_secret_access_key:
             # IAM role is acceptable — skip if both are empty (assume role-based auth)
             pass
+        # ── Supabase Auth — required in production ────────────────────────────
+        if not self.supabase_jwt_secret:
+            errors.append(
+                "SUPABASE_JWT_SECRET must be set in production. "
+                "Found in: Supabase Dashboard → Project Settings → API → JWT Settings."
+            )
+        if not self.supabase_project_url:
+            errors.append(
+                "SUPABASE_PROJECT_URL must be set in production. "
+                "Found in: Supabase Dashboard → Project Settings → API → Project URL."
+            )
         # SENTRY_DSN is optional — only warn, never block startup
         if errors:
             raise RuntimeError(

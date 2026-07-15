@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Loader2, ArrowLeft, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import AuthCard from '@/components/auth/AuthCard';
+import { useAuth } from '@/contexts/AuthContext';
 
 const inputBase = cn(
   'w-full h-11 rounded-lg border border-[var(--border-input)] bg-[var(--bg-muted)]',
@@ -18,20 +19,24 @@ export default function ForgotPasswordPage() {
   const uid = useId();
   const id = (s: string) => `${uid}-${s}`;
 
+  const { resetPassword, clearError, loading } = useAuth();
+
   const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [validationError, setValidationError] = useState('');
   const [sent, setSent] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.trim()) { setError('Email is required'); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('Enter a valid email address'); return; }
-    setError('');
-    setLoading(true);
-    // Simulate API call — replace with real password reset
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
+    if (!email.trim()) { setValidationError('Email is required'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setValidationError('Enter a valid email address'); return; }
+    setValidationError('');
+    clearError();
+    
+    // Call resetPassword from useAuth - handles Supabase API call
+    await resetPassword(email);
+    
+    // ALWAYS show success, regardless of whether email exists or any error
+    // This prevents email enumeration attacks
     setSent(true);
   }
 
@@ -103,12 +108,12 @@ export default function ForgotPasswordPage() {
             autoComplete="email"
             placeholder="you@example.com"
             aria-required="true"
-            aria-describedby={error ? id('email-err') : undefined}
-            className={cn(inputBase, error && 'border-red-400 focus:ring-red-400')}
+            aria-describedby={validationError ? id('email-err') : undefined}
+            className={cn(inputBase, validationError && 'border-red-400 focus:ring-red-400')}
             value={email}
-            onChange={(e) => { setEmail(e.target.value); if (error) setError(''); }}
+            onChange={(e) => { setEmail(e.target.value); if (validationError) setValidationError(''); }}
           />
-          {error && <p id={id('email-err')} role="alert" className="mt-1 text-xs text-red-500">{error}</p>}
+          {validationError && <p id={id('email-err')} role="alert" className="mt-1 text-xs text-red-500">{validationError}</p>}
         </div>
 
         <button

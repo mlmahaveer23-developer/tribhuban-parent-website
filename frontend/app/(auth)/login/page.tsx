@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useId } from 'react';
+import { useState, useId, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, Loader2, AlertCircle, UserX } from 'lucide-react';
+import { Eye, EyeOff, Loader2, AlertCircle, UserX, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import AuthCard from '@/components/auth/AuthCard';
+import { useAuth } from '@/contexts/AuthContext';
 import { Suspense } from 'react';
 
 // ── Shared input style ────────────────────────────────────────────────────────
@@ -98,19 +99,98 @@ function NoAccountBanner() {
   );
 }
 
-// ── Main login page ───────────────────────────────────────────────────────────
+// ── Email verified success banner — shown when ?verified=1 ────────────────────
+
+function VerifiedBanner() {
+  const searchParams = useSearchParams();
+  if (searchParams.get('verified') !== '1') return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: -8, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        role="alert"
+        className={cn(
+          'flex items-start gap-3 rounded-xl p-4 mb-6',
+          'border border-green-200 bg-green-50',
+        )}
+      >
+        <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" aria-hidden="true" />
+        <div>
+          <p className="text-sm font-semibold text-green-800">Email verified!</p>
+          <p className="text-xs text-green-700 mt-0.5">
+            Your email has been confirmed. You can now sign in.
+          </p>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+// ── Password reset success banner — shown when ?reset=1 ───────────────────────
+
+function PasswordResetBanner() {
+  const searchParams = useSearchParams();
+  if (searchParams.get('reset') !== '1') return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: -8, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        role="alert"
+        className={cn(
+          'flex items-start gap-3 rounded-xl p-4 mb-6',
+          'border border-green-200 bg-green-50',
+        )}
+      >
+        <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" aria-hidden="true" />
+        <div>
+          <p className="text-sm font-semibold text-green-800">Password updated!</p>
+          <p className="text-xs text-green-700 mt-0.5">
+            Your password has been changed successfully. Please sign in.
+          </p>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+// ── Main login form ───────────────────────────────────────────────────────────
 
 function LoginForm() {
   const uid = useId();
   const id = (s: string) => `${uid}-${s}`;
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [loading, setLoading] = useState(false);
+  const { signIn, signInWithGoogle, loading: authLoading, error: authError, clearError } = useAuth();
+
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [values, setValues] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [authError, setAuthError] = useState('');
+  const [localAuthError, setLocalAuthError] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+
+  // Sync context-level auth errors (e.g. from Google OAuth redirect errors)
+  // into local display state.
+  useEffect(() => {
+    if (authError) setLocalAuthError(authError);
+  }, [authError]);
+
+  // Handle ?error=oauth_error query param from /auth/callback failures.
+  useEffect(() => {
+    const errorParam = searchParams.get('error');
+    if (errorParam === 'oauth_error') {
+      setLocalAuthError('Google sign-in failed. Please try again.');
+    } else if (errorParam === 'verification_failed') {
+      setLocalAuthError('Email verification failed. Please request a new verification email.');
+    }
+  }, [searchParams]);
 
   function validate() {
     const e: Record<string, string> = {};
@@ -124,40 +204,57 @@ function LoginForm() {
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setErrors({});
-    setAuthError('');
-    setLoading(true);
+    setLocalAuthError('');
+    clearError();
 
-    // Simulate API — replace with real auth
-    await new Promise((r) => setTimeout(r, 1400));
+    await signIn({ email: values.email, password: values.password });
 
-    // Simulate "no account" scenario for demo — remove in production
-    const accountExists = values.email.includes('@');
-    if (!accountExists) {
-      setLoading(false);
-      window.location.href = '/login?noAccount=1';
-      return;
+    // After signIn, check for errors via authError (synced via useEffect above).
+    // If no error, the onAuthStateChange listener will update the session
+    // and we redirect.
+    if (!authError) {
+      // Validate redirect_to — only allow relative same-origin paths.
+      const redirectTo = searchParams.get('redirect_to');
+      const safePath =
+        redirectTo && redirectTo.startsWith('/') && !redirectTo.startsWith('//')
+          ? redirectTo
+          : '/';
+      router.push(safePath);
+    } else {
+      // Clear password field on auth error for security.
+      setValues((v) => ({ ...v, password: '' }));
     }
-
-    setLoading(false);
-    // On success: redirect to dashboard/home
-    window.location.href = '/';
   }
 
   function set(field: string, value: string) {
     setValues((v) => ({ ...v, [field]: value }));
     if (errors[field]) setErrors((e) => { const n = { ...e }; delete n[field]; return n; });
-    if (authError) setAuthError('');
+    if (localAuthError) { setLocalAuthError(''); clearError(); }
   }
 
-  function handleGoogle() {
+  async function handleGoogle() {
     setGoogleLoading(true);
-    window.location.href = '/api/auth/google';
+    setLocalAuthError('');
+    clearError();
+    const redirectTo = searchParams.get('redirect_to');
+    const safePath =
+      redirectTo && redirectTo.startsWith('/') && !redirectTo.startsWith('//')
+        ? redirectTo
+        : '/';
+    await signInWithGoogle(safePath);
+    // signInWithGoogle redirects the browser to Google — if we reach here
+    // it means an error occurred before the redirect.
+    setGoogleLoading(false);
   }
+
+  const isLoading = authLoading || googleLoading;
 
   return (
     <AuthCard>
-      {/* "No account" banner */}
+      {/* Query param banners */}
       <NoAccountBanner />
+      <VerifiedBanner />
+      <PasswordResetBanner />
 
       <div className="space-y-1 mb-7">
         <h1 className="font-display text-2xl font-semibold text-[var(--fg)]">Welcome back</h1>
@@ -170,13 +267,13 @@ function LoginForm() {
       </div>
 
       {/* Google */}
-      <GoogleButton onClick={handleGoogle} disabled={googleLoading || loading} />
+      <GoogleButton onClick={handleGoogle} disabled={isLoading} />
 
       <Divider />
 
       {/* Auth error banner */}
       <AnimatePresence>
-        {authError && (
+        {localAuthError && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -185,7 +282,7 @@ function LoginForm() {
           >
             <div className="flex items-center gap-2.5 rounded-lg p-3 bg-red-50 border border-red-200" role="alert">
               <AlertCircle className="h-4 w-4 text-red-500 shrink-0" aria-hidden="true" />
-              <p className="text-xs text-red-700 font-medium">{authError}</p>
+              <p className="text-xs text-red-700 font-medium">{localAuthError}</p>
             </div>
           </motion.div>
         )}
@@ -264,8 +361,8 @@ function LoginForm() {
         {/* Submit */}
         <button
           type="submit"
-          disabled={loading || googleLoading}
-          aria-busy={loading}
+          disabled={isLoading}
+          aria-busy={authLoading}
           className={cn(
             'relative w-full h-11 rounded-lg text-sm font-semibold overflow-hidden',
             'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)]',
@@ -275,8 +372,8 @@ function LoginForm() {
           )}
         >
           <span className="relative z-10 flex items-center justify-center gap-2">
-            {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
-            {loading ? 'Signing in…' : 'Sign In'}
+            {authLoading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+            {authLoading ? 'Signing in…' : 'Sign In'}
           </span>
           <span className="absolute inset-0 -skew-x-12 bg-white/10 -translate-x-full group-hover:translate-x-[200%] transition-transform duration-500 pointer-events-none" aria-hidden="true" />
         </button>

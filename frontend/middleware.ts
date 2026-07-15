@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LEGACY_REDIRECTS } from '@/lib/siteConfig';
+import { createSupabaseMiddlewareClient } from '@/lib/supabase/middleware';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 // CANONICAL_HOST is read from env so it works on Vercel without a custom domain.
@@ -15,6 +16,9 @@ const RESERVED_PREFIXES = [
   '/app', '/dashboard', '/portal', '/partner', '/customer', '/api/internal',
 ];
 
+const PROTECTED_ROUTE_PREFIXES = ['/account', '/profile', '/orders'];
+const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/reset-password'];
+
 // ── Security headers ──────────────────────────────────────────────────────────
 
 function applySecurityHeaders(response: NextResponse): void {
@@ -25,7 +29,7 @@ function applySecurityHeaders(response: NextResponse): void {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https://*.amazonaws.com https://*.cloudfront.net",
-    "connect-src 'self'",
+    "connect-src 'self' https://*.supabase.co",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -47,7 +51,7 @@ function ensureRequestId(request: NextRequest, response: NextResponse): void {
 
 // ── Middleware entry point ────────────────────────────────────────────────────
 
-export function middleware(request: NextRequest): NextResponse {
+export async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname, search, host } = request.nextUrl;
 
   // 1. Canonical-host redirect (www → non-www)
@@ -90,8 +94,35 @@ export function middleware(request: NextRequest): NextResponse {
     return res;
   }
 
-  // 5. Pass-through — attach security headers + correlation ID
+  // 4.5 Auth session refresh + protected route guard
   const res = NextResponse.next();
+  const supabase = createSupabaseMiddlewareClient(request, res);
+
+  // Refresh the session if the access token is expired
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const isProtectedRoute = PROTECTED_ROUTE_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`)
+  );
+
+  // Redirect authenticated users away from auth pages
+  const isAuthRoute = AUTH_ROUTES.includes(pathname);
+  if (isAuthRoute && user) {
+    applySecurityHeaders(res);
+    ensureRequestId(request, res);
+    return NextResponse.redirect(`${CANONICAL_ORIGIN}/`);
+  }
+
+  // Redirect unauthenticated users away from protected routes
+  if (isProtectedRoute && !user) {
+    const redirectUrl = new URL('/login', CANONICAL_ORIGIN);
+    redirectUrl.searchParams.set('redirect_to', pathname + search);
+    applySecurityHeaders(res);
+    ensureRequestId(request, res);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // 5. Pass-through — attach security headers + correlation ID
   applySecurityHeaders(res);
   ensureRequestId(request, res);
   return res;

@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import AuthCard from '@/components/auth/AuthCard';
+import { useAuth } from '@/contexts/AuthContext';
+import { getPasswordStrength } from '@/lib/utils/password-strength';
 
 // ── Shared input style ────────────────────────────────────────────────────────
 
@@ -18,24 +20,6 @@ const inputBase = cn(
 );
 
 const inputError = 'border-red-400 focus:ring-red-400';
-
-// Password strength checker
-function getPasswordStrength(password: string): { score: number; label: string; color: string } {
-  if (!password) return { score: 0, label: '', color: '' };
-  let score = 0;
-  if (password.length >= 8) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/[0-9]/.test(password)) score++;
-  if (/[^A-Za-z0-9]/.test(password)) score++;
-
-  const levels = [
-    { score: 1, label: 'Weak', color: '#ef4444' },
-    { score: 2, label: 'Fair', color: '#f97316' },
-    { score: 3, label: 'Good', color: '#C9A227' },
-    { score: 4, label: 'Strong', color: '#22c55e' },
-  ];
-  return levels[score - 1] ?? { score: 0, label: '', color: '' };
-}
 
 // ── Google OAuth button ───────────────────────────────────────────────────────
 
@@ -91,9 +75,9 @@ export default function SignUpPage() {
   const uid = useId();
   const id = (s: string) => `${uid}-${s}`;
 
+  const { signUp, signInWithGoogle, loading: authLoading, error: authError, clearError } = useAuth();
+
   const [step, setStep] = useState<SignUpStep>('form');
-  const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -101,6 +85,10 @@ export default function SignUpPage() {
   const [values, setValues] = useState({ name: '', email: '', password: '', confirm: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [agreed, setAgreed] = useState(false);
+
+  // Resend email state
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendSent, setResendSent] = useState(false);
 
   const strength = getPasswordStrength(values.password);
 
@@ -121,23 +109,66 @@ export default function SignUpPage() {
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setErrors({});
-    setLoading(true);
-    // Simulate API call — replace with real auth
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    setStep('success');
+    clearError();
+
+    // Attempt signup via Supabase
+    await signUp({ email: values.email, password: values.password, fullName: values.name });
+
+    // If an error occurred, the context's authError will be set via mapAuthError.
+    // For signup errors, we map common errors to field-specific errors for better UX.
+    // On success, proceed to verification screen.
+    if (!authError) {
+      setStep('success');
+    } else {
+      // Map auth error to field error when possible (e.g., duplicate email)
+      const lowerError = authError.toLowerCase();
+      if (lowerError.includes('already exists') || lowerError.includes('already registered')) {
+        setErrors({ email: authError });
+      } else if (lowerError.includes('password')) {
+        setErrors({ password: authError });
+      }
+      // Otherwise, authError is displayed in the banner at the top
+    }
   }
 
   function handleGoogle() {
-    setGoogleLoading(true);
-    // Initiate Google OAuth — replace with real provider URL
-    window.location.href = '/api/auth/google';
+    clearError();
+    signInWithGoogle();
+  }
+
+  async function handleResendEmail() {
+    setResendLoading(true);
+    try {
+      const supabase = (await import('@/lib/supabase/client')).getSupabaseBrowserClient();
+      const { error } = await supabase.auth.resend({ type: 'signup', email: values.email });
+      
+      if (error) {
+        // Show error in banner
+        alert(`Failed to resend email: ${error.message}`);
+      } else {
+        // Show success feedback
+        setResendSent(true);
+        
+        // Auto-clear the "Sent!" message after 2.5 seconds
+        setTimeout(() => {
+          setResendSent(false);
+        }, 2500);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to resend verification email';
+      alert(`Error: ${message}`);
+    } finally {
+      setResendLoading(false);
+    }
   }
 
   function set(field: string, value: string) {
     setValues((v) => ({ ...v, [field]: value }));
     if (errors[field]) setErrors((e) => { const n = { ...e }; delete n[field]; return n; });
+    if (authError) clearError();
   }
+
+  const isLoading = authLoading;
 
   // ── Success state ─────────────────────────────────────────────────────────
 
@@ -166,7 +197,27 @@ export default function SignUpPage() {
           </Link>
           <p className="text-xs text-[var(--fg-subtle)] mt-4">
             Didn&apos;t receive the email?{' '}
-            <button className="text-[var(--accent)] hover:underline" onClick={() => {}}>Resend</button>
+            <button 
+              type="button"
+              disabled={resendLoading}
+              aria-busy={resendLoading}
+              className="text-[var(--accent)] hover:underline disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+              onClick={handleResendEmail}
+            >
+              {resendLoading ? (
+                <>
+                  <Loader2 className="inline h-3 w-3 animate-spin mr-1" aria-hidden="true" />
+                  Sending...
+                </>
+              ) : resendSent ? (
+                <>
+                  <CheckCircle2 className="inline h-3 w-3 mr-1 text-green-500" aria-hidden="true" />
+                  Sent!
+                </>
+              ) : (
+                'Resend'
+              )}
+            </button>
           </p>
         </motion.div>
       </AuthCard>
@@ -188,9 +239,22 @@ export default function SignUpPage() {
       </div>
 
       {/* Google */}
-      <GoogleButton onClick={handleGoogle} disabled={googleLoading || loading} />
+      <GoogleButton onClick={handleGoogle} disabled={isLoading} />
 
       <Divider />
+
+      {/* Auth error banner */}
+      {authError && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="mb-4 overflow-hidden"
+        >
+          <div className="flex items-center gap-2.5 rounded-lg p-3 bg-red-50 border border-red-200" role="alert">
+            <p className="text-xs text-red-700 font-medium">{authError}</p>
+          </div>
+        </motion.div>
+      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
@@ -333,8 +397,8 @@ export default function SignUpPage() {
         {/* Submit */}
         <button
           type="submit"
-          disabled={loading || googleLoading}
-          aria-busy={loading}
+          disabled={isLoading}
+          aria-busy={authLoading}
           className={cn(
             'relative w-full h-11 rounded-lg text-sm font-semibold overflow-hidden',
             'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)]',
@@ -345,8 +409,8 @@ export default function SignUpPage() {
           )}
         >
           <span className="relative z-10 flex items-center justify-center gap-2">
-            {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
-            {loading ? 'Creating Account…' : 'Create Account'}
+            {authLoading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+            {authLoading ? 'Creating Account…' : 'Create Account'}
           </span>
           <span className="absolute inset-0 -skew-x-12 bg-white/10 -translate-x-full group-hover:translate-x-[200%] transition-transform duration-500 pointer-events-none" aria-hidden="true" />
         </button>
