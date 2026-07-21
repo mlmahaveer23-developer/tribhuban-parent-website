@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SITE_URL } from '@/lib/siteConfig';
+import ScrollReveal from '@/components/motion/ScrollReveal';
 
 // ── JSON-LD structured data ───────────────────────────────────────────────────
 
@@ -10,7 +11,7 @@ const aboutPageJsonLd = {
   name: 'About Tribhuban Concepts',
   url: `${SITE_URL}/about`,
   description:
-    'Learn about Tribhuban Concepts — our mission, values, timeline, leadership, and sustainability commitment.',
+    'Learn about Tribhuban Concepts — an Indian technology and energy startup founded in 2026. Our mission, values, leadership, and sustainability commitment.',
 };
 
 const organizationJsonLd = {
@@ -18,9 +19,50 @@ const organizationJsonLd = {
   '@type': 'Organization',
   name: 'Tribhuban Concepts',
   url: SITE_URL,
-  foundingDate: '2014',
+  foundingDate: '2026',
   description:
-    'Indian technology and engineering company specialising in solar energy and future technologies',
+    'Indian technology startup building innovative solutions across renewable energy, digital infrastructure, engineering, and future-focused technologies.',
+};
+
+// ── Leadership Person structured data (AEO / SEO) ─────────────────────────────
+
+const leaders = [
+  {
+    initials: 'CEO',
+    name: 'Pithabas Bindhani',
+    role: 'CEO & CMD',
+    bio: 'Leads Tribhuban Concepts with a vision to build technology-driven solutions that create long-term value for people, businesses, and communities. He focuses on innovation, responsible growth, and advancing renewable energy through practical engineering.',
+    // Social links: missing – update here when available
+  },
+  {
+    initials: 'COO',
+    name: 'Sachindra Nath Mundaluhari',
+    role: 'Chief Operating Officer',
+    bio: 'Oversees operations, execution, and project coordination across the organization. His focus is on building efficient processes, maintaining quality standards, and ensuring every initiative is delivered with consistency and accountability.',
+    // Social links: missing
+  },
+  {
+    initials: 'CFO',
+    name: 'Amit Tyagi',
+    role: 'Chief Financial Officer',
+    bio: 'Leads financial planning and organizational sustainability, supporting responsible decision-making and long-term growth while helping build a strong financial foundation for the company.',
+    // Social links: missing
+  },
+] as const;
+
+const personsJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': leaders.map((leader) => ({
+    '@type': 'Person',
+    name: leader.name,
+    jobTitle: leader.role,
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Tribhuban Concepts',
+      url: SITE_URL,
+    },
+    // sameAs: []  // TODO: add social profile URLs when available
+  })),
 };
 
 // ── Metadata ──────────────────────────────────────────────────────────────────
@@ -29,26 +71,26 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'About — Tribhuban Concepts',
     description:
-      'Learn about Tribhuban Concepts — an Indian technology and engineering company. Our mission, values, milestones, and the meaning of "Tribhuban".',
+      'Learn about Tribhuban Concepts — an Indian technology and energy startup founded in 2026. Our mission, values, leadership, and sustainability commitment.',
     alternates: { canonical: `${SITE_URL}/about` },
     openGraph: {
       type: 'website',
       url: `${SITE_URL}/about`,
       title: 'About — Tribhuban Concepts',
       description:
-        'Learn about Tribhuban Concepts — our mission, values, milestones, leadership, and sustainability commitment.',
+        'Learn about Tribhuban Concepts — our mission, values, leadership, and sustainability commitment.',
       siteName: 'Tribhuban Concepts',
     },
     twitter: {
       card: 'summary_large_image',
       title: 'About — Tribhuban Concepts',
       description:
-        'Learn about Tribhuban Concepts — our mission, values, milestones, leadership, and sustainability commitment.',
+        'Learn about Tribhuban Concepts — our mission, values, leadership, and sustainability commitment.',
     },
   };
 }
 
-// SSG — fully static, no ISR needed (Req 3.1)
+// SSG — fully static, no ISR needed
 export const revalidate = false;
 
 // ── Static content ────────────────────────────────────────────────────────────
@@ -58,64 +100,28 @@ const values = [
     icon: '🔗',
     title: 'Integration',
     description:
-      'We connect solar, technology, and engineering into unified solutions — bridging domains that others treat in isolation.',
+      'We bring together technology, renewable energy, engineering, and operations to create connected solutions that solve real-world challenges.',
   },
   {
     icon: '💡',
     title: 'Innovation',
     description:
-      'Every project is an opportunity to apply the latest engineering knowledge. We push the boundaries of what is possible today.',
+      'We continuously explore better ways to solve problems through thoughtful engineering, modern technologies, and a culture of continuous learning.',
   },
   {
     icon: '🎯',
     title: 'Integrity',
     description:
-      'We say what we will do, and we do what we say. Our clients trust us with their homes, businesses, and energy futures.',
+      'We build trust through honesty, accountability, and responsible decision-making. Every relationship is founded on transparency and long-term commitment.',
   },
 ] as const;
 
-const milestones = [
-  {
-    year: '2014',
-    title: 'Founded',
-    description:
-      'Tribhuban Concepts was established with a mission to make clean energy engineering accessible across India.',
-  },
-  {
-    year: '2017',
-    title: 'First Solar Project',
-    description:
-      'Commissioned our first rooftop solar installation, laying the foundation for a 500+ project portfolio.',
-  },
-  {
-    year: '2021',
-    title: 'Future Tech Division',
-    description:
-      'Launched a dedicated R&D division to explore energy storage, AI-driven grid management, and next-generation materials.',
-  },
-  {
-    year: '2024',
-    title: 'AI Integration',
-    description:
-      'Integrated AI-powered solar estimation and energy optimisation tools into our core offering, serving residential and commercial clients.',
-  },
-] as const;
-
-// PersonCard placeholder data
-const leaders = [
-  {
-    initials: 'TC',
-    name: 'Founder & CEO',
-    role: 'Founder & Chief Executive Officer',
-    bio: 'A mechanical engineer with 10+ years of experience in renewable energy systems across India. Leads Tribhuban Concepts with a focus on sustainable growth and engineering excellence.',
-  },
-  {
-    initials: 'CTO',
-    name: 'Chief Technology Officer',
-    role: 'Chief Technology Officer',
-    bio: 'Drives the technology vision for solar engineering and future technologies. Specialist in AI-driven energy systems and grid optimisation at scale.',
-  },
-] as const;
+const milestone = {
+  year: '2026',
+  title: 'Founded',
+  description:
+    'Tribhuban Concepts was founded to develop innovative solutions in renewable energy, engineering, and digital technologies. From day one, our focus has been on creating meaningful impact through responsible innovation and customer-centric thinking.',
+} as const;
 
 // ── Reusable PersonCard ───────────────────────────────────────────────────────
 
@@ -132,21 +138,21 @@ function PersonCard({
 }) {
   return (
     <article className="rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] p-6 flex flex-col gap-4">
-      {/* Avatar placeholder */}
+      {/* Avatar placeholder – modern typographic style */}
       <div
         aria-hidden="true"
-        className="w-16 h-16 rounded-full bg-[var(--bg-muted)] flex items-center justify-center"
-        style={{
-          background: 'linear-gradient(135deg, var(--accent-light) 0%, var(--bg-muted) 100%)',
-        }}
+        className="w-16 h-16 rounded-xl bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent-light)]/20 flex items-center justify-center"
       >
-        <span className="text-sm font-bold text-[var(--accent)]">{initials}</span>
+        <span className="text-3xl font-bold bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">
+          {initials}
+        </span>
       </div>
       <div>
         <h3 className="font-display text-lg font-semibold text-[var(--fg)]">{name}</h3>
         <p className="text-sm text-[var(--accent)] font-medium mt-0.5">{role}</p>
       </div>
       <p className="text-sm text-[var(--fg-muted)] leading-relaxed">{bio}</p>
+      {/* Social links placeholder – intentionally left empty until real URLs are available */}
     </article>
   );
 }
@@ -156,7 +162,7 @@ function PersonCard({
 export default function AboutPage() {
   return (
     <>
-      {/* JSON-LD structured data (Req 23.1, 23.2) */}
+      {/* JSON-LD structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageJsonLd) }}
@@ -165,11 +171,13 @@ export default function AboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personsJsonLd) }}
+      />
 
       <main id="main-content">
-
         {/* ── 1. Brand story ───────────────────────────────────────────────── */}
-        {/* Req 1.2a: Brand story — meaning of "Tribhuban" */}
         <section
           aria-label="Our story"
           className="bg-[var(--bg)] py-20 md:py-32"
@@ -187,16 +195,16 @@ export default function AboutPage() {
               everywhere.
             </p>
             <p className="text-lg text-[var(--fg-muted)] leading-relaxed">
-              For us, it is a statement of intent. We build technology that reaches
-              every tier of society — from the rooftop of a Mumbai apartment block to
-              the grid infrastructure connecting rural India. Solar energy, future
-              technologies, and engineering excellence, delivered without compromise.
+              For us, it represents the ambition to build technology that creates
+              meaningful impact across every level of society. Beginning with renewable
+              energy and digital innovation, we are developing practical solutions that
+              help individuals, businesses, and communities embrace a more sustainable
+              and technology-enabled future.
             </p>
           </div>
         </section>
 
         {/* ── 2. Mission & values ──────────────────────────────────────────── */}
-        {/* Req 1.2b: Mission & values — 3 values */}
         <section
           aria-label="Mission and values"
           className="bg-[var(--bg-subtle)] border-y border-[var(--border)] py-16 md:py-24"
@@ -207,8 +215,10 @@ export default function AboutPage() {
                 Mission &amp; Values
               </h2>
               <p className="text-lg text-[var(--fg-muted)] max-w-2xl mx-auto">
-                Our mission is to make clean, intelligent energy infrastructure available
-                to every Indian home and business — and to do it with integrity.
+                Our mission is to develop reliable technology and renewable energy
+                solutions that empower individuals, businesses, and communities across
+                India. We believe innovation should be practical, accessible, and built
+                on transparency, engineering excellence, and long-term trust.
               </p>
             </div>
             <ul
@@ -235,53 +245,49 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── 3. Timeline ──────────────────────────────────────────────────── */}
-        {/* Req 1.2c: Timeline — 4 milestones */}
+        {/* ── 3. Our beginning (single milestone) ──────────────────────────── */}
         <section
-          aria-label="Our milestones"
+          aria-label="Our beginning"
           className="bg-[var(--bg)] py-16 md:py-24"
         >
           <div className="container-content">
             <div className="text-center mb-12">
               <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[var(--fg)] mb-4">
-                Our Journey
+                Where We Started
               </h2>
               <p className="text-lg text-[var(--fg-muted)] max-w-xl mx-auto">
-                From a single installation to an integrated engineering company —
-                ten years of building what matters.
+                Every great journey begins with a single step. Here’s ours.
               </p>
             </div>
-            <ol
-              className="relative border-l border-[var(--border)] ml-4 md:ml-8 space-y-10 list-none p-0 m-0"
-              aria-label="Company milestones timeline"
-            >
-              {milestones.map((milestone) => (
-                <li key={milestone.year} className="pl-8 relative">
-                  {/* Timeline dot */}
-                  <span
-                    aria-hidden="true"
-                    className="absolute -left-3 top-1.5 w-5 h-5 rounded-full bg-[var(--accent)] border-4 border-[var(--bg)] block"
-                  />
-                  <time
-                    dateTime={milestone.year}
-                    className="text-sm font-bold uppercase tracking-wider text-[var(--accent)] block mb-1"
-                  >
-                    {milestone.year}
-                  </time>
-                  <h3 className="font-display text-xl font-semibold text-[var(--fg)] mb-2">
-                    {milestone.title}
-                  </h3>
-                  <p className="text-[var(--fg-muted)] leading-relaxed">
-                    {milestone.description}
-                  </p>
-                </li>
-              ))}
-            </ol>
+            <div className="flex justify-center">
+              <div className="relative pl-8 md:pl-8 ml-4 md:ml-0 border-l border-[var(--border)] max-w-lg">
+                <span
+                  aria-hidden="true"
+                  className="absolute -left-3 top-1.5 w-5 h-5 rounded-full bg-[var(--accent)] border-4 border-[var(--bg)] block"
+                />
+                <time
+                  dateTime={milestone.year}
+                  className="text-sm font-bold uppercase tracking-wider text-[var(--accent)] block mb-1"
+                >
+                  {milestone.year}
+                </time>
+                <h3 className="font-display text-xl font-semibold text-[var(--fg)] mb-2">
+                  {milestone.title}
+                </h3>
+                <p className="text-[var(--fg-muted)] leading-relaxed">
+                  {milestone.description}
+                </p>
+              </div>
+            </div>
+            <p className="text-center text-[var(--fg-muted)] mt-10 max-w-xl mx-auto">
+              Our journey has just begun. As we grow, we remain committed to building
+              trusted solutions, strong partnerships, and technologies that create
+              lasting value for future generations.
+            </p>
           </div>
         </section>
 
-        {/* ── 4. Leadership grid ───────────────────────────────────────────── */}
-        {/* Req 1.2d: Leadership grid — 2 placeholder PersonCards */}
+        {/* ── 4. Leadership grid with reveal animation ─────────────────────── */}
         <section
           aria-label="Leadership"
           className="bg-[var(--bg-subtle)] border-y border-[var(--border)] py-16 md:py-24"
@@ -292,21 +298,24 @@ export default function AboutPage() {
                 Our Leadership
               </h2>
               <p className="text-lg text-[var(--fg-muted)] max-w-xl mx-auto">
-                The team behind the engineering.
+                A leadership team committed to building an organization driven by
+                innovation, responsibility, and long-term impact.
               </p>
             </div>
             <ul
-              className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto list-none p-0 m-0"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto list-none p-0 m-0"
               role="list"
             >
-              {leaders.map((leader) => (
+              {leaders.map((leader, index) => (
                 <li key={leader.role}>
-                  <PersonCard
-                    initials={leader.initials}
-                    name={leader.name}
-                    role={leader.role}
-                    bio={leader.bio}
-                  />
+                  <ScrollReveal variant="fadeUp" delay={index * 0.1} duration={0.55}>
+                    <PersonCard
+                      initials={leader.initials}
+                      name={leader.name}
+                      role={leader.role}
+                      bio={leader.bio}
+                    />
+                  </ScrollReveal>
                 </li>
               ))}
             </ul>
@@ -314,7 +323,6 @@ export default function AboutPage() {
         </section>
 
         {/* ── 5. Sustainability commitment ─────────────────────────────────── */}
-        {/* Req 1.2e: Sustainability commitment */}
         <section
           aria-label="Sustainability commitment"
           className="bg-[var(--bg)] py-16 md:py-24"
@@ -329,22 +337,21 @@ export default function AboutPage() {
               </h2>
             </div>
             <p className="text-lg text-[var(--fg-muted)] leading-relaxed mb-6 text-center">
-              Every Tribhuban Concepts project is designed with environmental impact
-              as a first-order constraint, not an afterthought. Our solar installations
-              have collectively offset thousands of tonnes of CO₂ — and we measure,
-              publish, and continuously improve that figure.
+              Sustainability is one of the principles guiding how we design products,
+              deliver solutions, and make decisions. As we grow, we aim to reduce
+              environmental impact through responsible engineering, efficient resource
+              utilization, and continuous improvement.
             </p>
             <p className="text-lg text-[var(--fg-muted)] leading-relaxed text-center">
-              We are committed to responsible sourcing, minimal-waste installation
-              practices, and full end-of-life recycling pathways for every system we
-              commission. Sustainability is not a marketing claim — it is an engineering
-              specification.
+              We believe sustainability is achieved through consistent actions rather
+              than promises. Our goal is to adopt responsible practices, encourage
+              innovation, and contribute to a cleaner, more sustainable future as our
+              capabilities continue to expand.
             </p>
           </div>
         </section>
 
         {/* ── 6. Careers CTA ───────────────────────────────────────────────── */}
-        {/* Req 1.2f: Careers CTA → /careers */}
         <section
           aria-label="Join our team"
           className="bg-[var(--bg-subtle)] border-t border-[var(--border)] py-16 md:py-24"
@@ -354,9 +361,10 @@ export default function AboutPage() {
               Join the Team
             </h2>
             <p className="text-lg text-[var(--fg-muted)] mb-8">
-              We are always looking for engineers, technologists, and operators who
-              share our passion for clean energy and innovation. See what
-              opportunities are open.
+              As Tribhuban Concepts grows, we look forward to welcoming passionate
+              engineers, designers, innovators, and problem solvers who want to build
+              technology that creates meaningful impact. Explore future opportunities
+              to grow with us.
             </p>
             <Link
               href="/careers"
@@ -366,7 +374,6 @@ export default function AboutPage() {
             </Link>
           </div>
         </section>
-
       </main>
     </>
   );
