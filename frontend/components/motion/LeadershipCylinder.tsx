@@ -44,19 +44,14 @@ export default function LeadershipCylinder({
   const [selectedIndex, setSelectedIndex] = useState(0);
   const reducedMotion = useReducedMotion();
 
-  // Number of leaders determines the angle between cards
   const totalCards = leaders.length;
   const anglePerCard = 360 / totalCards;
-
-  // Calculate cylinder rotation to bring selected card to front (0°)
   const cylinderRotation = -selectedIndex * anglePerCard;
 
-  // Handle card selection
   const handleCardClick = useCallback((index: number) => {
     setSelectedIndex(index);
   }, []);
 
-  // Keyboard navigation
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent, index: number) => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -73,19 +68,18 @@ export default function LeadershipCylinder({
     [totalCards]
   );
 
-  // If reduced motion is preferred, use a simpler flat layout
+  // Reduced-motion: flat grid layout
   if (reducedMotion) {
     return (
       <div className={`leadership-cylinder--reduced ${className}`}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
-          {leaders.map((leader, index) => (
+          {leaders.map((leader, i) => (
             <LeaderCard
               key={leader.role}
               leader={leader}
-              index={index}
-              isSelected={index === selectedIndex}
-              onClick={() => handleCardClick(index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
+              isSelected={i === selectedIndex}
+              onClick={() => handleCardClick(i)}
+              onKeyDown={(e) => handleKeyDown(e, i)}
               reducedMotion
             />
           ))}
@@ -101,13 +95,9 @@ export default function LeadershipCylinder({
 
   return (
     <div className={`leadership-cylinder ${className}`}>
-      {/* 3D Cylinder container */}
       <div
         className="leadership-cylinder__scene"
-        style={{
-          perspective: '1200px',
-          perspectiveOrigin: '50% 50%',
-        }}
+        style={{ perspective: '1200px', perspectiveOrigin: '50% 50%' }}
       >
         <div
           className="leadership-cylinder__cylinder"
@@ -117,18 +107,17 @@ export default function LeadershipCylinder({
             transformStyle: 'preserve-3d',
           }}
         >
-          {leaders.map((leader, index) => {
-            const cardAngle = index * anglePerCard;
-            const isSelected = index === selectedIndex;
+          {leaders.map((leader, i) => {
+            const cardAngle = i * anglePerCard;
+            const isSelected = i === selectedIndex;
 
             return (
               <LeaderCard
                 key={leader.role}
                 leader={leader}
-                index={index}
                 isSelected={isSelected}
-                onClick={() => handleCardClick(index)}
-                onKeyDown={(e) => handleKeyDown(e, index)}
+                onClick={() => handleCardClick(i)}
+                onKeyDown={(e) => handleKeyDown(e, i)}
                 angle={cardAngle}
                 radius={CYLINDER_RADIUS}
               />
@@ -137,7 +126,6 @@ export default function LeadershipCylinder({
         </div>
       </div>
 
-      {/* Navigation dots */}
       <NavigationDots
         total={totalCards}
         selected={selectedIndex}
@@ -151,7 +139,6 @@ export default function LeadershipCylinder({
 
 interface LeaderCardProps {
   leader: Leader;
-  index: number;
   isSelected: boolean;
   onClick: () => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
@@ -162,7 +149,6 @@ interface LeaderCardProps {
 
 function LeaderCard({
   leader,
-  index: _index,
   isSelected,
   onClick,
   onKeyDown,
@@ -170,21 +156,17 @@ function LeaderCard({
   radius = 0,
   reducedMotion = false,
 }: LeaderCardProps) {
-  // Calculate 3D position for cylinder layout
   const transform = reducedMotion
     ? undefined
     : `rotateY(${angle}deg) translateZ(${radius}px)`;
 
-  // Scale up selected card in 3D mode
   const scale = !reducedMotion && isSelected ? CARD_SCALE_ACTIVE : 1;
 
   return (
     <article
       className={`leadership-cylinder__card ${isSelected ? 'leadership-cylinder__card--active' : ''}`}
       style={{
-        transform: transform
-          ? `${transform} scale(${scale})`
-          : undefined,
+        transform: transform ? `${transform} scale(${scale})` : undefined,
         transition: `transform ${TRANSITION_DURATION} ${TRANSITION_EASING}, background-color 0.3s ease`,
         transformStyle: 'preserve-3d',
         backfaceVisibility: 'hidden',
@@ -196,11 +178,7 @@ function LeaderCard({
       aria-label={`${leader.name}, ${leader.role}. ${isSelected ? 'Currently selected' : 'Click to select'}`}
       aria-pressed={isSelected}
     >
-      {/* Avatar placeholder */}
-      <div
-        aria-hidden="true"
-        className="leadership-cylinder__avatar"
-      >
+      <div aria-hidden="true" className="leadership-cylinder__avatar">
         <span className="text-sm font-bold text-[var(--accent)]">
           {leader.initials}
         </span>
@@ -236,14 +214,14 @@ function NavigationDots({ total, selected, onSelect }: NavigationDotsProps) {
       role="tablist"
       aria-label="Leadership carousel navigation"
     >
-      {Array.from({ length: total }).map((_, index) => (
+      {Array.from({ length: total }).map((_, i) => (
         <button
-          key={index}
-          className={`leadership-cylinder__dot ${index === selected ? 'leadership-cylinder__dot--active' : ''}`}
-          onClick={() => onSelect(index)}
+          key={i}
+          className={`leadership-cylinder__dot ${i === selected ? 'leadership-cylinder__dot--active' : ''}`}
+          onClick={() => onSelect(i)}
           role="tab"
-          aria-selected={index === selected}
-          aria-label={`View leader ${index + 1} of ${total}`}
+          aria-selected={i === selected}
+          aria-label={`View leader ${i + 1} of ${total}`}
           type="button"
         />
       ))}
