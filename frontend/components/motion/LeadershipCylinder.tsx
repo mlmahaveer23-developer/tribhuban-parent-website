@@ -162,7 +162,7 @@ interface LeaderCardProps {
 
 function LeaderCard({
   leader,
-  index,
+  index: _index,
   isSelected,
   onClick,
   onKeyDown,
