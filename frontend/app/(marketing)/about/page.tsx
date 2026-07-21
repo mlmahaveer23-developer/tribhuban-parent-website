@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SITE_URL } from '@/lib/siteConfig';
-import ScrollReveal from '@/components/motion/ScrollReveal';
+import LeadershipCylinder from '@/components/motion/LeadershipCylinder';
 
 // ── JSON-LD structured data ───────────────────────────────────────────────────
 
@@ -123,39 +123,7 @@ const milestone = {
     'Tribhuban Concepts was founded to develop innovative solutions in renewable energy, engineering, and digital technologies. From day one, our focus has been on creating meaningful impact through responsible innovation and customer-centric thinking.',
 } as const;
 
-// ── Reusable PersonCard ───────────────────────────────────────────────────────
-
-function PersonCard({
-  initials,
-  name,
-  role,
-  bio,
-}: {
-  initials: string;
-  name: string;
-  role: string;
-  bio: string;
-}) {
-  return (
-    <article className="rounded-xl bg-[var(--bg-subtle)] border border-[var(--border)] p-6 flex flex-col gap-4">
-      {/* Avatar placeholder – modern typographic style */}
-      <div
-        aria-hidden="true"
-        className="w-16 h-16 rounded-xl bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent-light)]/20 flex items-center justify-center"
-      >
-        <span className="text-3xl font-bold bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] bg-clip-text text-transparent">
-          {initials}
-        </span>
-      </div>
-      <div>
-        <h3 className="font-display text-lg font-semibold text-[var(--fg)]">{name}</h3>
-        <p className="text-sm text-[var(--accent)] font-medium mt-0.5">{role}</p>
-      </div>
-      <p className="text-sm text-[var(--fg-muted)] leading-relaxed">{bio}</p>
-      {/* Social links placeholder – intentionally left empty until real URLs are available */}
-    </article>
-  );
-}
+// PersonCard is now handled within LeadershipCylinder component
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
@@ -256,7 +224,7 @@ export default function AboutPage() {
                 Where We Started
               </h2>
               <p className="text-lg text-[var(--fg-muted)] max-w-xl mx-auto">
-                Every great journey begins with a single step. Here’s ours.
+                Every great journey begins with a single step. Here&apos;s ours.
               </p>
             </div>
             <div className="flex justify-center">
@@ -287,10 +255,11 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── 4. Leadership grid with reveal animation ─────────────────────── */}
+        {/* ── 4. Leadership cylinder ───────────────────────────────────────────── */}
+        {/* Req 1.2d: Leadership — interactive 3D carousel */}
         <section
           aria-label="Leadership"
-          className="bg-[var(--bg-subtle)] border-y border-[var(--border)] py-16 md:py-24"
+          className="bg-[var(--bg-subtle)] border-y border-[var(--border)] py-16 md:py-24 overflow-hidden"
         >
           <div className="container-content">
             <div className="text-center mb-12">
@@ -299,26 +268,10 @@ export default function AboutPage() {
               </h2>
               <p className="text-lg text-[var(--fg-muted)] max-w-xl mx-auto">
                 A leadership team committed to building an organization driven by
-                innovation, responsibility, and long-term impact.
+                innovation, responsibility, and long-term impact. Click or use arrow keys to explore.
               </p>
             </div>
-            <ul
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto list-none p-0 m-0"
-              role="list"
-            >
-              {leaders.map((leader, index) => (
-                <li key={leader.role}>
-                  <ScrollReveal variant="fadeUp" delay={index * 0.1} duration={0.55}>
-                    <PersonCard
-                      initials={leader.initials}
-                      name={leader.name}
-                      role={leader.role}
-                      bio={leader.bio}
-                    />
-                  </ScrollReveal>
-                </li>
-              ))}
-            </ul>
+            <LeadershipCylinder leaders={leaders} />
           </div>
         </section>
 
