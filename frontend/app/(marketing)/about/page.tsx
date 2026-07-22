@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { SITE_URL } from '@/lib/siteConfig';
 import ScrollReveal from '@/components/motion/ScrollReveal';
 import StaggerGroup from '@/components/motion/StaggerGroup';
-import LeadershipCylinder from '@/components/motion/LeadershipCylinder';
+import LeadershipCards from '@/components/motion/LeadershipCards';
 import AboutCounters from '@/components/marketing/AboutCounters';
 import AboutHeroMandala from '@/components/marketing/AboutHeroMandala';
 import AboutMarquee from '@/components/marketing/AboutMarquee';
@@ -128,7 +128,7 @@ export default function AboutPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd.org) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd.persons) }} />
 
-      <main id="main-content">
+      <main id="main-content" className="ab-page-wrap">
 
         {/* ══════════════════════════════════════════════════════════════════
             §1  HERO — full viewport, mandala, large editorial headline
@@ -141,7 +141,7 @@ export default function AboutPage() {
           <AboutHeroMandala />
 
           <div className="container-content ab-hero__inner">
-            <ScrollReveal variant="clipUp" duration={0.65}>
+            <ScrollReveal variant="fadeUp" duration={0.65}>
               <p className="ab-eyebrow">
                 <span className="ab-eyebrow__line" aria-hidden="true" />
                 About Tribhuban Concepts
@@ -198,7 +198,7 @@ export default function AboutPage() {
               <ScrollReveal variant="fadeLeft" duration={0.55} className="ab-conviction__label-wrap">
                 <span className="ab-tag">The Conviction</span>
               </ScrollReveal>
-              <ScrollReveal variant="clipUp" delay={0.1} duration={0.75}>
+              <ScrollReveal variant="fadeUp" delay={0.1} duration={0.75}>
                 <blockquote className="ab-conviction__quote">
                   Clean energy and intelligent technology should work together —
                   not in parallel silos. Every Indian home and business deserves
@@ -337,7 +337,7 @@ export default function AboutPage() {
                 A senior, focused leadership team. Click cards or use arrow keys to explore.
               </p>
             </ScrollReveal>
-            <LeadershipCylinder leaders={leaders} />
+            <LeadershipCards leaders={leaders} />
           </div>
         </section>
 
