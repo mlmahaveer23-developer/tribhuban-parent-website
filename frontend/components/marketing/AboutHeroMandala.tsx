@@ -1,80 +1,138 @@
 'use client';
 
 /**
- * AboutHeroMandala — Animated SVG mandala that slowly rotates in the hero.
- * Uses CSS animation only. Respects prefers-reduced-motion (stops rotation).
- * Pure decorative element — aria-hidden.
+ * AboutHeroMandala — Clearly visible animated SVG mandala.
+ * - High stroke widths + opacity so it's unmistakably visible
+ * - Slow counter-rotate inner ring for layered motion feel
+ * - Mobile: positioned as a background layer behind text (z-index: 0)
+ * - Desktop: right-side decorative element
+ * - Respects prefers-reduced-motion (freezes animation, stays visible)
  */
 
 export default function AboutHeroMandala() {
+  const cx = 240;
+  const cy = 240;
+
   return (
-    <div className="about-hero-mandala" aria-hidden="true">
+    <div className="ab-mandala" aria-hidden="true">
       <svg
         viewBox="0 0 480 480"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="about-hero-mandala__svg"
+        className="ab-mandala__svg"
       >
-        {/* Outer ring */}
-        <circle cx="240" cy="240" r="230" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 8" opacity="0.25" />
-        {/* Mid ring */}
-        <circle cx="240" cy="240" r="180" stroke="currentColor" strokeWidth="0.5" opacity="0.18" />
-        {/* Inner ring */}
-        <circle cx="240" cy="240" r="130" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 6" opacity="0.22" />
-        {/* Core ring */}
-        <circle cx="240" cy="240" r="80" stroke="currentColor" strokeWidth="0.75" opacity="0.28" />
-        {/* Radial spokes — 12 */}
+        {/* ── Outer dashed ring ── */}
+        <circle
+          cx={cx} cy={cy} r="228"
+          stroke="currentColor" strokeWidth="1.5"
+          strokeDasharray="6 10"
+          opacity="0.55"
+        />
+
+        {/* ── Second ring ── */}
+        <circle
+          cx={cx} cy={cy} r="192"
+          stroke="currentColor" strokeWidth="1"
+          opacity="0.45"
+        />
+
+        {/* ── Third ring with fill tint ── */}
+        <circle
+          cx={cx} cy={cy} r="152"
+          stroke="currentColor" strokeWidth="1.5"
+          strokeDasharray="3 8"
+          opacity="0.5"
+        />
+
+        {/* ── Core ring ── */}
+        <circle
+          cx={cx} cy={cy} r="108"
+          stroke="currentColor" strokeWidth="2"
+          opacity="0.6"
+        />
+
+        {/* ── Inner ring (counter-rotates via CSS class) ── */}
+        <g className="ab-mandala__inner-spin">
+          <circle
+            cx={cx} cy={cy} r="68"
+            stroke="currentColor" strokeWidth="1.5"
+            strokeDasharray="5 7"
+            opacity="0.55"
+          />
+        </g>
+
+        {/* ── 12 radial spokes ── */}
         {Array.from({ length: 12 }).map((_, i) => {
           const angle = (i * 30 * Math.PI) / 180;
-          const x1 = 240 + 85 * Math.cos(angle);
-          const y1 = 240 + 85 * Math.sin(angle);
-          const x2 = 240 + 225 * Math.cos(angle);
-          const y2 = 240 + 225 * Math.sin(angle);
+          const x1 = cx + 112 * Math.cos(angle);
+          const y1 = cy + 112 * Math.sin(angle);
+          const x2 = cx + 224 * Math.cos(angle);
+          const y2 = cy + 224 * Math.sin(angle);
           return (
             <line
               key={i}
               x1={x1} y1={y1} x2={x2} y2={y2}
               stroke="currentColor"
-              strokeWidth="0.5"
-              opacity="0.12"
+              strokeWidth="0.75"
+              opacity="0.35"
             />
           );
         })}
-        {/* Petal ring at 180px */}
+
+        {/* ── 8 petal circles at r=192 ── */}
         {Array.from({ length: 8 }).map((_, i) => {
           const angle = (i * 45 * Math.PI) / 180;
-          const cx = 240 + 180 * Math.cos(angle);
-          const cy = 240 + 180 * Math.sin(angle);
+          const pcx = cx + 192 * Math.cos(angle);
+          const pcy = cy + 192 * Math.sin(angle);
           return (
             <circle
               key={i}
-              cx={cx} cy={cy} r="10"
-              stroke="currentColor"
-              strokeWidth="0.75"
-              opacity="0.2"
+              cx={pcx} cy={pcy} r="14"
+              stroke="currentColor" strokeWidth="1.25"
+              opacity="0.5"
               fill="none"
             />
           );
         })}
-        {/* Diamond accents at 130px */}
+
+        {/* ── 8 small accent dots at r=152 ── */}
+        {Array.from({ length: 8 }).map((_, i) => {
+          const angle = ((i * 45 + 22.5) * Math.PI) / 180;
+          const dcx = cx + 152 * Math.cos(angle);
+          const dcy = cy + 152 * Math.sin(angle);
+          return (
+            <circle
+              key={i}
+              cx={dcx} cy={dcy} r="4"
+              fill="currentColor"
+              opacity="0.45"
+            />
+          );
+        })}
+
+        {/* ── 4 diamonds at r=108 ── */}
         {Array.from({ length: 4 }).map((_, i) => {
           const angle = (i * 90 * Math.PI) / 180;
-          const cx = 240 + 130 * Math.cos(angle);
-          const cy = 240 + 130 * Math.sin(angle);
-          const s = 7;
+          const dcx = cx + 108 * Math.cos(angle);
+          const dcy = cy + 108 * Math.sin(angle);
+          const s = 9;
           return (
             <polygon
               key={i}
-              points={`${cx},${cy - s} ${cx + s},${cy} ${cx},${cy + s} ${cx - s},${cy}`}
-              stroke="currentColor"
-              strokeWidth="0.75"
-              opacity="0.25"
+              points={`${dcx},${dcy - s} ${dcx + s},${dcy} ${dcx},${dcy + s} ${dcx - s},${dcy}`}
+              stroke="currentColor" strokeWidth="1.25"
+              opacity="0.55"
               fill="none"
             />
           );
         })}
-        {/* Centre dot */}
-        <circle cx="240" cy="240" r="4" fill="currentColor" opacity="0.3" />
+
+        {/* ── Centre cross ── */}
+        <line x1={cx - 16} y1={cy} x2={cx + 16} y2={cy} stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
+        <line x1={cx} y1={cy - 16} x2={cx} y2={cy + 16} stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
+
+        {/* ── Centre dot ── */}
+        <circle cx={cx} cy={cy} r="5" fill="currentColor" opacity="0.8" />
       </svg>
     </div>
   );

@@ -1,15 +1,20 @@
 'use client';
 
 /**
- * LeadershipCards — Clean, responsive leadership card switcher.
- * Replaces the buggy 3D cylinder. Uses a simple tab-driven approach:
- * - Desktop: 3 cards side by side, active card highlighted
- * - Mobile: horizontal scroll snap
- * Fully accessible: keyboard nav, aria-selected, focus management.
- * No Framer Motion dependency — pure CSS transitions.
+ * LeadershipCards — Premium leadership showcase.
+ *
+ * Layout (desktop): [Employee] [CEO — centre, larger] [Employee]
+ * On click/keyboard:
+ *   - Card flips with a 3D Y-axis flip (front → back shows detail)
+ *   - Bio text is revealed word-by-word via CSS animation
+ *   - Active card scales up slightly and glows
+ *
+ * Mobile: stacked vertically, CEO first.
+ * Accessible: keyboard nav, role="button", aria-expanded, aria-label.
+ * Respects prefers-reduced-motion (instant transitions).
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useReducedMotion } from '@/lib/utils/motion';
 
 export interface LeaderCard {
@@ -23,81 +28,166 @@ interface Props {
   leaders: readonly LeaderCard[];
 }
 
-export default function LeadershipCards({ leaders }: Props) {
-  const [active, setActive] = useState(0);
-  const reduced = useReducedMotion();
-
-  const select = useCallback((i: number) => setActive(i), []);
-
-  const handleKey = useCallback(
-    (e: React.KeyboardEvent, i: number) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActive(i); }
-      if (e.key === 'ArrowRight') { e.preventDefault(); setActive((p) => (p + 1) % leaders.length); }
-      if (e.key === 'ArrowLeft')  { e.preventDefault(); setActive((p) => (p - 1 + leaders.length) % leaders.length); }
-    },
-    [leaders.length]
-  );
-
+/** Split bio string into words for staggered reveal */
+function BioWords({ text, active, reduced }: { text: string; active: boolean; reduced: boolean }) {
+  const words = text.split(' ');
   return (
-    <div className="lc-wrap">
-      {/* Tab row — desktop pill tabs */}
-      <div className="lc-tabs" role="tablist" aria-label="Leadership team members">
-        {leaders.map((l, i) => (
-          <button
-            key={l.role}
-            role="tab"
-            aria-selected={i === active}
-            aria-controls={`lc-panel-${i}`}
-            id={`lc-tab-${i}`}
-            tabIndex={i === active ? 0 : -1}
-            className={`lc-tab ${i === active ? 'lc-tab--active' : ''}`}
-            onClick={() => select(i)}
-            onKeyDown={(e) => handleKey(e, i)}
-            type="button"
-          >
-            <span className="lc-tab__initials" aria-hidden="true">{l.initials}</span>
-            <span className="lc-tab__name">{l.name}</span>
-          </button>
-        ))}
-      </div>
+    <p className="lc2-bio" aria-label={text}>
+      {words.map((word, i) => (
+        <span
+          key={i}
+          className={`lc2-bio__word ${active ? 'lc2-bio__word--visible' : ''} ${reduced ? 'lc2-bio__word--reduced' : ''}`}
+          style={{ transitionDelay: reduced ? '0ms' : `${i * 35}ms` }}
+          aria-hidden="true"
+        >
+          {word}{' '}
+        </span>
+      ))}
+      {/* Screen-reader-only full text */}
+    </p>
+  );
+}
 
-      {/* Card panels */}
-      <div className="lc-panels">
-        {leaders.map((l, i) => (
-          <div
-            key={l.role}
-            id={`lc-panel-${i}`}
-            role="tabpanel"
-            aria-labelledby={`lc-tab-${i}`}
-            hidden={i !== active}
-            className={`lc-panel ${i === active ? 'lc-panel--active' : ''} ${reduced ? 'lc-panel--reduced' : ''}`}
-          >
-            {/* Avatar */}
-            <div className="lc-panel__avatar" aria-hidden="true">
-              <span className="lc-panel__initials">{l.initials}</span>
+interface CardProps {
+  leader: LeaderCard;
+  index: number;
+  isCeo: boolean;
+  isFlipped: boolean;
+  reduced: boolean;
+  onFlip: () => void;
+  onKey: (e: React.KeyboardEvent) => void;
+}
+
+function LeaderCardItem({ leader, isCeo, isFlipped, reduced, onFlip, onKey }: CardProps) {
+  return (
+    <div
+      className={`lc2-scene ${isCeo ? 'lc2-scene--ceo' : ''}`}
+    >
+      <div
+        className={`lc2-card ${isFlipped ? 'lc2-card--flipped' : ''} ${reduced ? 'lc2-card--reduced' : ''}`}
+        role="button"
+        tabIndex={0}
+        aria-label={`${leader.name}, ${leader.role}. ${isFlipped ? 'Click to close' : 'Click to read bio'}`}
+        aria-expanded={isFlipped}
+        onClick={onFlip}
+        onKeyDown={onKey}
+      >
+        {/* ── Front face ── */}
+        <div className="lc2-card__front">
+          {isCeo && <span className="lc2-card__badge">Leadership</span>}
+          <div className="lc2-card__avatar">
+            <span className="lc2-card__initials">{leader.initials}</span>
+          </div>
+          <h3 className="lc2-card__name">{leader.name}</h3>
+          <p className="lc2-card__role">{leader.role}</p>
+          <span className="lc2-card__hint">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 1v14M1 8h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            View profile
+          </span>
+        </div>
+
+        {/* ── Back face (bio + word reveal) ── */}
+        <div className="lc2-card__back">
+          <div className="lc2-card__back-top">
+            <div className="lc2-card__avatar lc2-card__avatar--sm">
+              <span className="lc2-card__initials lc2-card__initials--sm">{leader.initials}</span>
             </div>
-
-            <div className="lc-panel__body">
-              <h3 className="lc-panel__name">{l.name}</h3>
-              <p className="lc-panel__role">{l.role}</p>
-              <p className="lc-panel__bio">{l.bio}</p>
+            <div>
+              <h3 className="lc2-card__name lc2-card__name--sm">{leader.name}</h3>
+              <p className="lc2-card__role">{leader.role}</p>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Dot indicators — mobile fallback */}
-      <div className="lc-dots" aria-hidden="true">
-        {leaders.map((_, i) => (
+          <BioWords text={leader.bio} active={isFlipped} reduced={reduced} />
           <button
-            key={i}
+            className="lc2-card__close"
+            onClick={(e) => { e.stopPropagation(); onFlip(); }}
+            tabIndex={isFlipped ? 0 : -1}
+            aria-label="Close profile"
             type="button"
-            className={`lc-dot ${i === active ? 'lc-dot--active' : ''}`}
-            onClick={() => select(i)}
-            tabIndex={-1}
-          />
-        ))}
+          >
+            ✕ Close
+          </button>
+        </div>
+
+        {/* Glow on active */}
+        {isFlipped && <div className="lc2-card__glow" aria-hidden="true" />}
       </div>
+    </div>
+  );
+}
+
+export default function LeadershipCards({ leaders }: Props) {
+  const [flipped, setFlipped] = useState<number | null>(null);
+  const reduced = useReducedMotion();
+
+  // Find the CEO index (role contains 'CEO')
+  const ceoIndex = leaders.findIndex(l => l.role.toUpperCase().includes('CEO'));
+
+  // Build display order: others before CEO, CEO in middle, others after
+  const orderedIndices: number[] = [];
+  const beforeCeo = leaders
+    .map((_, i) => i)
+    .filter(i => i !== ceoIndex && i < ceoIndex + Math.ceil((leaders.length - 1) / 2));
+  const afterCeo = leaders
+    .map((_, i) => i)
+    .filter(i => i !== ceoIndex && !beforeCeo.includes(i));
+
+  // Interleave: left side, CEO, right side
+  const leftCount = Math.floor((leaders.length - 1) / 2);
+  for (let i = 0; i < leftCount; i++) {
+    if (i < leaders.length - 1) orderedIndices.push(beforeCeo[i] ?? afterCeo[i] ?? i);
+  }
+  orderedIndices.push(ceoIndex >= 0 ? ceoIndex : 0);
+  for (let i = leftCount; i < leaders.length - 1; i++) {
+    const src = afterCeo[i - leftCount] ?? beforeCeo[i - leftCount];
+    if (src !== undefined) orderedIndices.push(src);
+  }
+
+  // Fallback: if ordering produced duplicates or gaps, just use [0, ceo, rest]
+  const seen = new Set<number>();
+  const safeOrder = orderedIndices.filter(i => {
+    if (seen.has(i)) return false;
+    seen.add(i);
+    return true;
+  });
+  while (safeOrder.length < leaders.length) {
+    for (let i = 0; i < leaders.length; i++) {
+      if (!safeOrder.includes(i)) safeOrder.push(i);
+    }
+  }
+
+  const handleFlip = useCallback((i: number) => {
+    setFlipped(prev => (prev === i ? null : i));
+  }, []);
+
+  const handleKey = useCallback((e: React.KeyboardEvent, i: number) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleFlip(i); }
+    if (e.key === 'Escape') setFlipped(null);
+  }, [handleFlip]);
+
+  return (
+    <div className="lc2-wrap">
+      <div className="lc2-grid">
+        {safeOrder.map((leaderIndex) => {
+          const leader = leaders[leaderIndex];
+          const isCeo = leaderIndex === (ceoIndex >= 0 ? ceoIndex : -1);
+          return (
+            <LeaderCardItem
+              key={leader.role}
+              leader={leader}
+              index={leaderIndex}
+              isCeo={isCeo}
+              isFlipped={flipped === leaderIndex}
+              reduced={reduced ?? false}
+              onFlip={() => handleFlip(leaderIndex)}
+              onKey={(e) => handleKey(e, leaderIndex)}
+            />
+          );
+        })}
+      </div>
+      <p className="lc2-hint" aria-hidden="true">Click any card to reveal their profile</p>
     </div>
   );
 }
