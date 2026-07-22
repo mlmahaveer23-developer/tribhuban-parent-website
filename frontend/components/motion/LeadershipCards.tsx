@@ -14,7 +14,7 @@
  * Respects prefers-reduced-motion (instant transitions).
  */
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { useReducedMotion } from '@/lib/utils/motion';
 
 export interface LeaderCard {
